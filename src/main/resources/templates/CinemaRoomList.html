@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Cinema Room List</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <main>
+        <div class="blur"></div>
+
+        <div class="user-sidebar">
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list rel">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <span><img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="bar"></span>
+                <ul class="segments">
+                    <li th:if="${isManager}"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li><a th:href="@{/invoice/list}">Invoice</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}" class="checked"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="func-screen rel">
+            <div class="dropdown">
+                <img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="small-bar dropdown-toggle"
+                    id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employee/manage}">Employee</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/ticket/manage}">Booking History</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/invoice/list}">Invoice</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}" class="checked"><a class="dropdown-item" th:href="@{/cinemarooms}">Room</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+            <div class="management-wrapper important rel">
+                <h2 class="func-name">
+                    Cinema Room
+                </h2>
+                <form th:action="@{/cinemarooms/1}">
+                    <div style="display: flex; align-items: center; justify-content: space-between">
+                        <div class="filter mb-30">
+                            <div class="filter-search">
+                                <input type="text" name="name" th:value="${name}" class="form-control rounded"
+                                    placeholder="Search room" aria-label="Search" aria-describedby="search-addon" />
+                                <span class=" border-0" id="search-addon">
+                                    <button type="submit" class="search-btn"><img
+                                            th:src="@{/icons/magnifying-glass-solid.svg}"></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="button mb-30">
+                            <a th:href="'/addCinemaRoom'">
+                                <button type="button">Add Cinema Room</button>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="room-manage">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="name-col">Name</th>
+                                    <th>Quantity</th>
+                                    <th class="ro">Row</th>
+                                    <th class="co">Column</th>
+                                    <th class="btn-wrapper">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="cinemaRoom : ${cinemaRoomList}">
+                                    <td th:text="${cinemaRoom.room_name}">name</td>
+                                    <td th:text="${cinemaRoom.seat_quantity}">quantity</td>
+                                    <td th:text="${cinemaRoom.seat_row}">row</td>
+                                    <td th:text="${cinemaRoom.seat_column}">column</td>
+                                    <td class="btns">
+                                        <a th:href="'/seat/seatsConfig/' + ${cinemaRoom.room_id}">
+                                            Config seat
+                                        </a>
+                                        <a th:href="'/updateCinemaRoom/' + ${cinemaRoom.room_id}">
+                                            Update room
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                </form>
+                <p th:text="${message}">....</p>
+                <nav aria-label="Page navigation example" class="paging-wrapper">
+                    <ul class="pagination justify-content-center flex-wrap">
+                        <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                            <a class="page-link"
+                                th:href="@{'/cinemarooms/1' + ${name!=null?'?name='+name:''}}">First</a>
+                        </li>
+                        <li th:class="${currentPage > 1 ?'page-item' : 'page-item disabled'}">
+                            <a class="page-link"
+                                th:href="@{'/cinemarooms/' + ${currentPage - 1}+ ${name!=null?'?name='+name:''}}">Previous</a>
+                        </li>
+                        <th:block th:if="${totalPage <= 4}">
+                            <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,totalPage)}"
+                                th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/cinemarooms/' + ${i} + ${name!=null?'?name='+name:''}}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+                        <th:block th:if="${totalPage > 4}">
+                            <th:block th:if="${currentPage <= 2 || currentPage > totalPage - 2}">
+                                <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,2)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/cinemarooms/' + ${i} + ${name!=null?'?name='+name:''}}">[[${i}]]</a>
+                                </li>
+
+                                <a class="page-link"
+                                    th:href="@{'/cinemarooms/3' + ${name!=null?'?name='+name:''}}">...</a>
+
+                                <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(totalPage-1,totalPage)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/cinemarooms/'  + ${i} + ${name!=null?'?name='+name:''}}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${currentPage > 2 && currentPage < totalPage - 1}">
+                                <a class="page-link"
+                                    th:href="@{'/cinemarooms/' + ${currentPage - 1}+ ${name!=null?'?name='+name:''}}">...</a>
+
+                                <li th:if="${totalPage!=0}"
+                                    th:each="i:${#numbers.sequence(currentPage-1,currentPage+1)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/cinemarooms/' + ${i}+ ${name!=null?'?name='+name:''}}">[[${i}]]</a>
+                                </li>
+
+                                <a class="page-link"
+                                    th:href="@{'/cinemarooms/' + ${currentPage + 1}+ ${name!=null?'?name='+name:''}}">...</a>
+                            </th:block>
+                        </th:block>
+
+
+                        <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                            <a class="page-link"
+                                th:href="@{'/cinemarooms/' + ${currentPage + 1}+ ${name!=null?'?name='+name:''}}">Next</a>
+                        </li>
+                        <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                            <a class="page-link"
+                                th:href="@{'/cinemarooms/' + ${totalPage}+ ${name!=null?'?name='+name:''}}">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+    <script th:src="@{/js/employee.js}"></script>
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+
+    <main>
+        <div class="user-sidebar">
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list rel">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <span><img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="bar"></span>
+                <ul class="segments">
+                    <li th:if="${isManager}"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}" class="checked"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li><a th:href="@{/invoice/list}">Invoice</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="func-screen rel">
+            <div class="dropdown">
+                <img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="small-bar dropdown-toggle"
+                    id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employee/manage}">Employee</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/ticket/manage}">Booking History</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/invoice/list}">Invoice</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}" class="checked"><a class="dropdown-item" th:href="@{/cinemarooms}">Room</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+            <div class="management-wrapper important rel">
+                <h2 class="func-name">
+                    Employee Management
+                </h2>
+
+                <div class="add mb-30">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#myModal">
+                        Add Employee
+                    </button>
+                </div>
+                <form th:action="@{/employee/manage/search}" method="post">
+                    <div class="filter mb-30">
+                        <div class="filter-search">
+                            <input type="text" name="user_name" th:value="${user_name}" class="form-control rounded"
+                                placeholder="Search username" aria-label="Search" aria-describedby="search-addon" />
+                            <input type="text" name="email" th:value="${email}" class="form-control rounded"
+                                placeholder="Search email" aria-label="Search" aria-describedby="search-addon" />
+                            <input type="text" name="phoneNumber" th:value="${phoneNumber}" class="form-control rounded"
+                                placeholder="Search phone" aria-label="Search" aria-describedby="search-addon" />
+                            <span class="input-group-text border-0" id="search-addon">
+                                <button type="submit" class="search-btn"><img
+                                        th:src="@{/icons/magnifying-glass-solid.svg}"></button></span>
+                        </div>
+                    </div>
+                    <div class="room-manage">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="name-col">Username</th>
+                                    <th>Full Name</th>
+                                    <th class="ro">Email</th>
+                                    <th class="co">Phone Number</th>
+                                    <th class="btn-wrapper">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sử dụng Thymeleaf để lặp qua danh sách list employee -->
+                                <tr th:each="ListEmployee : ${list}">
+                                    <!-- Hiển thị thông tin của mỗi employee -->
+                                    <td th:text="${ListEmployee.getUsername()}">Abba</td>
+                                    <td th:text="${ListEmployee.getFullname()}">Mr C</td>
+                                    <td th:text="${ListEmployee.getEmail()}">a@gmail.com</td>
+                                    <td th:text="${ListEmployee.getPhoneNumber()}">011 223 456 7</td>
+                                    <td class="btns">
+                                        <a style="color: var(--red)"
+                                            th:href="${'/employee/manage/remove/' + ListEmployee.getAccount_id()}" onclick="return confirm('Are you sure you want to remove this employee?');">Remove</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add Employee</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form id="employeeForm">
+                            <div class="form-group">
+                                <label for="email">Enter Email:</label>
+                                <div class="input-group">
+                                    <input type="text" id="email" name="email" class="form-control rounded"
+                                        aria-label="Search" aria-describedby="search-addon-1" required
+                                        th:value="${email}">
+                                </div>
+                            </div>
+                        </form>
+                        <p id="error" class="error-message"></p>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="addEmployeeBtn">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+</body>
+
+</html>

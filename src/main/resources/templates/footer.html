@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Cinema</title>
+</head>
+<body>
+<footer>
+    <div class="footer-wrapper">
+        <div class="logo-container">
+            <h1 class="logo foot">Cinemax</h1>
+        </div>
+        <div class="info">
+            <span>CONTACT US</span>
+            <span>Phone: 1234567890</span>
+            <span>Address: Ha Noi, Viet Nam</span>
+        </div>
+    </div>
+    <div class="copyright">@Copyright 2024. PJB_G5 All Rights Reserved.</div>
+</footer>
+<script>
+    let bar = document.querySelector('.bar');
+    let list = document.querySelector('.navigate-list');
+    if (bar != null)
+        bar.onclick = () => {
+            list.classList.toggle("close");
+        }
+</script>
+</body>
+</html>

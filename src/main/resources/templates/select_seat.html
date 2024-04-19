@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/specificMovie.css}">
+    <link rel="stylesheet" th:href="@{/css/alert.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<body>
+<div th:replace="nav.html"></div>
+<div th:style="'background:url(/images/' + ${movie.getBanner()} + ');' + 'background-size:cover'"  class="ground-image">
+</div>
+<div class="danger">
+    <i class="fas fa-times-circle shine"></i>
+    &nbsp; &nbsp;
+    <span id="message"></span>
+</div>
+<div class="main">
+    <div class="func-wrapper important">
+        <div class="rel">
+            <a class="back">
+                <button type="button">Back</button>
+            </a>
+        </div>
+        <div class="seat-display">
+            <div class="seat-holder">
+                <div th:each="row : ${seats}" class="seat-row mb-30">
+                    <div th:each="seat : ${row}"
+                         th:class="${'seat-column'}"
+                         th:id="${seat.id}"
+                         th:classappend="${!seat.status ? 'booked ' : ''} + ${!seat.status ? '' : seat.type}"
+                         th:text="${seat.position}">
+                    </div>
+                </div>
+            </div>
+            <div class="seat-info-holder">
+                <div class="seat-info">
+                    <div>
+                        <div class="illustration select"></div>
+                        <span>Seat is selected</span>
+                    </div>
+                    <div>
+                        <div class="illustration booked"></div>
+                        <span>Seat was booked</span>
+                    </div>
+                    <div>
+                        <div class="illustration choose"></div>
+                        <span>Seat can choose</span>
+                    </div>
+                    <div>
+                        <div class="illustration VIP"></div>
+                        <span>Seat VIP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <form method="post" th:action="@{/seatchose/{movieId}/{mrdId}/{timeID}
+                   (movieId=${movie.movie_id}, mrdId=${mrdId}, timeID = ${timeID})}" class="seat-form">
+            <input type="submit" value="Continue">
+        </form> -->
+        <form th:action="@{/chooseSeat}" method="post" class="seat-form">
+            <input type="hidden" th:value="${movieId}" name="movieId"/>
+            <input type="hidden" th:value="${mrdID}" name="mrdID"/>
+            <input type="hidden" th:value="${msID}" name="msID"/>
+            <input type="submit" value="Continue"/>
+        </form>
+        <input type="hidden" id="s" th:value="${error}"/>
+    </div>
+</div>
+<div th:replace="footer.html"></div>
+<script th:src="@{/js/chooseSeat.js}"></script>
+<script>
+    function showCheck(message) {
+      var danger = document.querySelector(".danger");
+      var messageElement = document.getElementById("message");
+      messageElement.textContent = message;
+      danger.style.display = "flex";
+  
+      setTimeout(function() {
+        danger.style.display = "none";
+      }, 2500);
+    }
+
+    var successValue = document.getElementById("s").value;
+    if(successValue === "Please choose seat!!!"){
+        showCheck(successValue);
+    }
+
+    let url = window.location.pathname;
+    url =url.substring(0, url.lastIndexOf('/'));
+    url = url.replace("seatchose", "datechose");
+    document.querySelector('.back').href = url;
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+.main{
+    margin-top: 80px;
+    padding-bottom: 180px;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.main .func-wrapper{
+    min-width: 70%;
+    display: grid;
+    padding: var(--extreme-spacing);
+    border-radius: 10px;
+    background-color: var(--white);
+    /*margin: var(--extreme-spacing);*/
+}
+
+.main .func-title{
+    display: grid;
+    place-content: center;
+}
+
+.main .func-wrapper .input-wrapper{
+    min-height: 50px;
+}
+
+.main .func-wrapper .file-thing, .checkbox-thing{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: var(--extreme-spacing);
+    gap: var(--extreme-spacing)
+}
+
+.input-wrapper div{
+    width: 100%;
+}
+
+.input-wrapper div label{
+    display: flex;
+    flex-direction: column;
+}
+
+.input-wrapper input[type= text], .input-wrapper input[type=date], .input-wrapper input[type=number]{
+    width: 100%;
+    min-height: 20px;
+    background-color: var(--white-smoke);
+    padding: var(--spacing);
+    border-radius: 5px;
+    border: 1px solid darkgray;
+    border-bottom-width: 2px;
+}
+
+.input-wrapper .field,.input-half-wrapper .field{
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: var(--spacing);
+    margin-left: var(--spacing);
+}
+
+.file-thing .input-half-wrapper label{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 400px;
+}
+
+.file-thing label {
+    display: flex;
+    flex-direction: column;
+}
+
+.checkbox-thing .grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing);
+}
+
+.checkbox-thing .flex{
+    display: flex;
+    gap: var(--spacing);
+    flex-direction: column;
+}
+
+#output{
+    margin-top: var(--spacing);
+    width: 200px;
+    border-radius: 5px;
+}
+
+#output-b{
+    margin-top: var(--spacing);
+    width: 300px;
+    border-radius: 5px;
+}
+
+.submit{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.submit input{
+    padding: var(--spacing);
+    width: 100px;
+    display: grid;
+    place-content: center;
+    background-color: var(--dark-green);
+    color: var(--white);
+    border-radius: 5px;
+}
+
+.submit input:hover{
+    background-color: var(--green);
+}
+
+@media all and (max-width: 1000px) {
+    .main .func-wrapper .file-thing ,.checkbox-thing{
+        display: block;
+    }
+
+    .banner, .status{
+        margin-top: var(--extreme-spacing);
+    }
+
+    .checkbox-thing .grid{
+        grid-template-columns: repeat(3,1fr);
+    }
+
+    .main .func-wrapper{
+        margin: var(--spacing);
+    }
+}
+
+
+/*.import{*/
+/*    margin-left: var(--spacing);*/
+/*    display: grid;*/
+/*    place-content: center;*/
+/*    border-radius: 5px;*/
+/*    background-color: var(--gray);*/
+/*    color: var(--white);*/
+/*    max-width: 70px;*/
+/*}*/
+
+/*.import:hover{*/
+/*    opacity: 0.8;*/
+/*}*/
+
+.date-wrapper, .discount-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--extreme-spacing);
+    align-items: center;
+}
+
+.discount-wrapper .input-wrapper.sec{
+    flex-grow: 1;
+}
+
+.input-wrapper .flex label{
+    flex-direction: row;
+    gap: var(--extreme-spacing)
+}
+
+.half{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--extreme-spacing)
+}
+
+/*.coating{*/
+/*    display: flex;*/
+/*    gap: var(--extreme-spacing)*/
+/*}*/
+
+.status-avai{
+    align-self: flex-start;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.input-half-wrapper select{
+    min-height: 20px;
+    background-color: var(--white-smoke);
+    padding: var(--spacing);
+    border-radius: 5px;
+    border: 1px solid darkgray;
+    border-bottom-width: 2px;
+}
+
+@media all and (max-width:  700px) {
+    .discount-wrapper{
+        grid-template-columns: 1fr;
+    }
+}

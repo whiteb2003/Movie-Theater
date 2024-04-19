@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+
+    <main>
+        <div class="blur"></div>
+        <div class="user-sidebar">
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list rel">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <span><img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="bar"></span>
+                <ul class="segments">
+                    <li th:if="${isManager}"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li class="checked"><a th:href="@{/invoice/list}">Invoice</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="func-screen rel">
+            <div class="dropdown">
+                <img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="small-bar dropdown-toggle"
+                    id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employee/manage}">Employee</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/ticket/manage}">Booking History</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/invoice/list}">Invoice</a></li>
+                    <li th:if="${isManager}" class="checked"><a class="dropdown-item"
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/cinemarooms}">Room</a></li>
+                    <li><a class="dropdown-item" th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+            <div class="management-wrapper rel important">
+                <h2 class="func-name">
+                    Invoice Management
+                </h2>
+
+                <form th:action="@{/invoice/list}">
+                    <div class="filter mb-30">
+                        <div class="filter-search">
+                            <input type="text" name="code" th:value="${code}" class="form-control rounded"
+                                placeholder="Search code" aria-label="Search" aria-describedby="search-addon" />
+                            <span class=" border-0" id="search-addon">
+                                <button type="submit" class="search-btn"><img
+                                        th:src="@{/icons/magnifying-glass-solid.svg}"></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div th:if="${error}" class="alert alert-danger" id="errorAlert" role="alert">
+                        <strong>Error:</strong> <span th:text="${error}"></span>
+                    </div>
+                </form>
+                <div class="room-manage">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="name-col">Movie</th>
+                                <th>Date</th>
+                                <th class="co">Time</th>
+                                <th class="co">Room</th>
+                                <th style="min-width: 120px;" class="co">Account</th>
+                                <th class="co">Code</th>
+                                <th class="co">Status</th>
+                                <th class="co">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="invoice : ${invoices}">
+                                <td th:text="${invoice.movie_title_en}">Movie</td>
+                                <td th:text="${invoice.movie_date}">Date</td>
+                                <td th:text="${invoice.schedule}">Schedule</td>
+                                <td th:text="${invoice.room}">Room</td>
+                                <td th:text="${invoice.username}">Account</td>
+                                <td th:text="${invoice.code}">Code</td>
+                                <td th:text="${invoice.status}">Status</td>
+                                <td class="btns align-items-center">
+                                    <a th:if="${!invoice.status.equals( T(com.group5.cpl.model.enums.InvoiceStatus).PAID)}"
+                                        th:href="@{/invoice/confirm/{id}(id=${invoice.id})}" class="me-2">Checkout</a>
+                                    <a th:href="@{/invoice/{id}(id=${invoice.id})}" class="ms-2">View</a>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <th:block th:if="${#lists.isEmpty(invoices)}">
+                    <p style="color: var(--red); text-align: center;font-size: 20px" class="mt-30">No invoice found.</p>
+                </th:block>
+                <nav th:if="${not #lists.isEmpty(invoices)}" class="paging-wrapper" aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/invoice/list(offset=0, pageSize=${pageSize}, code=${code})}"
+                                aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/invoice/list(offset=${currentPage - 1}, pageSize=${pageSize}, code=${code})}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == i} ? 'active'"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a class="page-link"
+                                th:href="@{/invoice/list(offset=${i}, pageSize=${pageSize}, code=${code})}"
+                                th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/invoice/list(offset=${currentPage + 1}, pageSize=${pageSize}, code=${code})}"
+                                aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/invoice/list(offset=${totalPages - 1}, pageSize=${pageSize}, code=${code})}"
+                                aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+
+    <script>
+        // Remove error alert after 3 seconds
+        setTimeout(function () {
+            var errorAlert = document.getElementById('errorAlert');
+            if (errorAlert) {
+                errorAlert.parentNode.removeChild(errorAlert);
+            }
+        }, 3000); // 3000 milliseconds = 3 seconds
+    </script>
+
+</body>
+
+</html>

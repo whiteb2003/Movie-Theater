@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link th:href="@{/css/room.css}" rel="stylesheet">
+    <title>Update Cinema Room</title>
+</head>
+<body>
+<div th:replace="nav.html"></div>
+<main>
+    <div class="blur"></div>
+
+    <div class="p-30 room-wrapper important">
+        <div class="rel">
+            <h2>Update Cinema Room</h2>
+            <a th:href="'/cinemarooms'" class="back">
+                <button type="button">Back</button>
+            </a>
+        </div>
+        <form th:action="'/updateCinemaRoom/' + ${cinemaRoom.room_id}" th:object="${cinemaRoom}" method="post" class="form-1">
+            <label class="room">
+                <span>Cinema Room Name:</span>
+                <input type="text" th:field="*{room_name}" th:value="${cinemaRoom.room_name}"/>
+            </label>
+            <label>
+                <span>Seat Columns:</span>
+                <input type="number" th:field="*{seat_column}" th:value="${cinemaRoom.seat_column}"/>
+            </label>
+            <label>
+                <span>Seat Rows:</span>
+                <input type="number" th:field="*{seat_row}" th:value="${cinemaRoom.seat_row}"/>
+            </label>
+            <div class="submit">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+        <p th:text="${message}">....</p>
+    </div>
+</main>
+<div th:replace="footer.html"></div>
+</body>
+</html>

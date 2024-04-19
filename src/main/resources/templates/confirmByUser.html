@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/css/specificMovie.css}">
+    <style>
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #4caf50;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div th:style="'background:url(/images/' + ${movie.getBanner()} + ');' + 'background-size:cover'"
+        class="ground-image">
+    </div>
+    <main class="main">
+        <div class="func-wrapper important">
+            <div class="grid mb-30">
+                <div>
+                    <div class="notif mb-30">
+                        <h2 th:text="${movie.movie_title_en}"></h2>
+                    </div>
+
+                    <div class="re-movie-info mb-30">
+                        <div class="img-wrapper">
+                            <div class="inner p-10">
+                                <img th:src="@{${movie.PosterImagePath}}">
+                            </div>
+                        </div>
+                        <div class="info-wrapper">
+                            <div>
+                                <span class="bold">Room:</span> <span th:text="${mrd.room.room_name}"></span>
+                            </div>
+                            <div>
+                                <span class="bold">Date:</span> <span
+                                    th:text="${#dates.format(mrd.movie_date, 'dd/MM/yyyy')}"></span>
+                            </div>
+                            <div>
+                                <span class="bold">Time:</span><span
+                                    th:text="${(ms.schedule.value div 60)} + ':' + (${(ms.schedule.value mod 60)} == 0 ? '00' : (${(ms.schedule.value mod 60)}))"></span>
+                            </div>
+                            <div>
+                                <span class="bold">Seat:</span>
+                                <div class="seat">
+                                    <span th:each="seat : ${list}" th:text="${seat.position} + ' '"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="bold nocenter">Price:</span>
+                                <div class="seat-holder">
+                                    <span th:each="seat : ${list}"
+                                        th:text="${seat.position} + ' : ' +${#numbers.formatDecimal(seat.type.price, 0, 'COMMA', 0, 'POINT')} + ' đ    '"></span>
+                                </div>
+                            </div>
+                            <th:block th:if="${mess != null}">
+                                <div>
+                                    <span class="bold">Score for ticket converting:</span> <span
+                                        th:text="${scoreConvert}"></span>
+                                </div>
+                            </th:block>
+                            <div>
+                                <span class="bold">Total:</span> <span style="color: var(--dark-blue)"
+                                    th:text="${#numbers.formatDecimal(sum, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="notif mb-30">
+                        <h2>Check your booking ticket information</h2>
+                    </div>
+                    <div>
+                        <div class="user-info">
+                            <th:block th:if="${mess == null or mess == 'Please choose type to convert!'}">
+                                <th:block sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')">
+                                    <div>
+                                        <span class="bold">Promotion: </span>
+                                        <select class="p-10" name="promotion" onchange="updateInforValue(this)">
+                                            <option th:value="0">Select</option>
+                                            <option th:each="promotion : ${promotions}"
+                                                th:value="${promotion.promotion_id}" th:text="${promotion.title}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <span class="bold">User: </span>
+                                        <form th:action="@{/checkUser}" method="post" class="input-group rounded">
+                                            <input type="hidden" name="movieId" th:value="${movie.movie_id}" />
+                                            <input type="hidden" name="mrdId" th:value="${mrd.mrd_id}" />
+                                            <input type="hidden" name="msId" th:value="${ms.movie_schedule_id}" />
+                                            <input type="text" name="email" class="form-control rounded"
+                                                th:value="${email}" placeholder="Search" aria-label="Search"
+                                                aria-describedby="search-addon" />
+                                            <span class="input-group-text border-0" id="search-addon">
+                                                <button type="submit" class="search-btn"><img
+                                                        th:src="@{/icons/magnifying-glass-solid.svg}"></button>
+                                            </span>
+                                        </form>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                            <th:block sec:authorize="hasAnyAuthority('USER')">
+                                <div>
+                                    <span class="bold">Full Name: </span> <span sec:authorize="isAuthenticated()"
+                                        th:text="${#authentication.principal.fullName}"></span>
+                                </div>
+                                <div>
+                                    <span class="bold">Email: </span> <span sec:authorize="isAuthenticated()"
+                                        th:text="${#authentication.principal.email}"></span>
+                                </div>
+                                <div>
+                                    <span class="bold">Phone: </span> <span sec:authorize="isAuthenticated()"
+                                        th:text="${#authentication.principal.phone}"></span>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${infor == 'ok'}">
+                                <div>
+                                    <span class="bold">Full Name: </span> <span th:text="${user.fullname}"></span>
+                                </div>
+                                <div>
+                                    <span class="bold">Email: </span> <span th:text="${user.email}"></span>
+                                </div>
+                                <div>
+                                    <span class="bold">Phone: </span> <span th:text="${user.phoneNumber}"></span>
+                                </div>
+                                <th:block
+                                    th:if="${mess==null or mess == 'Please choose type to convert!' or inforConvert == 'Member score is not enough to convert ticket' }">
+                                    <span class="bold">Convert to ticket</span>
+                                    <div class="convert-box">
+                                        <label><input type="radio" form="confirm" name="convert" value="agree" /> Agree
+                                        </label>
+                                        <label><input type="radio" form="confirm" name="convert" value="disagree" />
+                                            Disagree
+                                        </label>
+                                    </div>
+                                    <p id="error"></p>
+                                </th:block>
+                            </th:block>
+                            <th:block th:if="${infor == 'fail'}">
+                                <p style="color: var(--red)">User not found</p>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: var(--extreme-spacing); align-content: center;justify-content: flex-end">
+                <button type="button" class="submit-gray" onclick="cancle()"
+                    th:text="${mess==null ?'Cancel' :'Back to home'}"></button>
+                <th:block th:if="${mess == null or mess == 'Please choose type to convert!' }">
+                    <form id="confirm" th:action="@{/confirmTicket}" method="post">
+                        <input type="hidden" form="confirm" th:value="${userId}" name="user2" />
+                        <input type="hidden" form="confirm" th:value="${infor}" name="infor" />
+                        <input type="hidden" form="confirm" sec:authorize="isAuthenticated()"
+                            th:value="${#authentication.principal.id}" name="user1" />
+                        <input type="hidden" value="0" name="promotion" />
+                        <button type="button" class="submit" onclick="checkConvert()">Confirm booking ticket</button>
+                    </form>
+                </th:block>
+            </div>
+            <span th:text="${inforConvert}" style="color: var(--dark-green)"></span>
+            <span th:text="${mess}" style="color: var(--dark-green)"></span>
+            <span th:text="${error}" style="color: var(--red)"></span>
+            <input type="hidden" th:value="${back}" id="back" />
+            <div class="progress"></div>
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+    <script th:src="@{/js/confirm.js}"></script>
+    <script>
+        let back = document.getElementById("back").value;
+        function cancle() {
+            window.location = back;
+        }
+        function updateInforValue(selectElement) {
+            var inforInput = document.querySelector('input[name="promotion"]');
+            inforInput.value = selectElement.value;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+
+    <main>
+        <div class="user-sidebar">
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list rel">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <span><img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="bar"></span>
+                <ul class="segments">
+                    <li th:if="${isManager}"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li><a th:href="@{/invoice/list}">Invoice</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}" class="checked"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="func-screen rel">
+            <div class="dropdown">
+                <img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="small-bar dropdown-toggle"
+                    id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employee/manage}">Employee</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/ticket/manage}">Booking History</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/invoice/list}">Invoice</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}" class="checked"><a class="dropdown-item" th:href="@{/cinemarooms}">Room</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+            <div class="management-wrapper rel important">
+                <h2 th:if="${isManager}" class="func-name">
+                    Promo Management
+                </h2>
+                <h2 th:if="${!isManager}" class="func-name">
+                    Promotion List
+                </h2>
+
+                <div class="filter mb-10" style="display: flex;justify-content: space-between;align-items: center">
+                    <div class="filter-search">
+                        <form th:action="${'/promo/manage'}" style="display: flex">
+                            <input type="text" name="keyword" th:value="${keyword}" class="form-control rounded"
+                                placeholder="Search title" aria-label="Search" aria-describedby="search-addon" />
+                            <span class="input-group-text border-0" id="search-addon">
+                                <button type="submit" class="search-btn"><img
+                                        th:src="@{/icons/magnifying-glass-solid.svg}"></button></span>
+                        </form>
+
+                    </div>
+                    <div class="add">
+                        <a th:href="@{/promo/add}">
+                            <button>Add Promo</button>
+                        </a>
+                    </div>
+                </div>
+                <div th:if="${not #lists.isEmpty(promotions)}" class="room-manage">
+                    <p>Total promotions: <span th:text="${totalPromotions}"></span></p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="name-col" style="width: 500px;">Title
+                                </th>
+                                <th style="min-width: 80px" class="co">Start Date</th>
+                                <th style="min-width: 80px" class="co">End Date</th>
+                                <th style="min-width: 100px" class="co">Discount Percentage</th>
+                                <th class="co">Status</th>
+                                <th th:if="${isManager}" style="width: 200px" class="btn-wrapper">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="promotion, promotionIndex : ${promotions}">
+                                <td style="overflow: hidden">
+                                    <a style="color: var(--dark-blue); display: -webkit-box;-webkit-line-clamp: 1    ;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;"
+                                        th:href="@{/promo/{id}(id=${promotion.promotion_id})}"
+                                        th:text="${promotion.title}">Title</a>
+                                </td>
+                                <td th:text="${promotion.startDate}">Start Date</td>
+                                <td th:text="${promotion.endDate}">End Date</td>
+                                <td>
+                                    <span th:if="${promotion.discountPercentage != null}"
+                                        th:text="${promotion.discountPercentage + '%'}">Discount Percentage</span>
+                                    <span th:unless="${promotion.discountPercentage != null}">Discount Percentage</span>
+                                </td>
+                                <td th:text="${promotion.status}">Status</td>
+
+                                <td th:if="${isManager}" class="btns">
+                                    <a th:href="@{/promo/update/{id}(id=${promotion.promotion_id})}">Edit</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <th:block th:if="${#lists.isEmpty(promotions)}">
+                    <p>No promotions found.</p>
+                </th:block>
+                <nav th:if="${not #lists.isEmpty(promotions)}" aria-label="Page navigation" class="paging-wrapper">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/promo/manage(offset=0, pageSize=${pageSize})}"
+                                aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/promo/manage(offset=${currentPage - 1}, pageSize=${pageSize})}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == i} ? 'active'"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a class="page-link" th:href="@{/promo/manage(offset=${i}, pageSize=${pageSize})}"
+                                th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/promo/manage(offset=${currentPage + 1}, pageSize=${pageSize})}"
+                                aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/promo/manage(offset=${totalPages - 1}, pageSize=${pageSize})}"
+                                aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+
+</body>
+
+</html>

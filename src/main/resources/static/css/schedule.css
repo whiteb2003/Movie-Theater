@@ -1,0 +1,105 @@
+.main{
+    min-height: 100%;
+    margin: var(--extreme-spacing) 0;
+    padding-bottom: 200px;
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.main .func-wrapper{
+    width: 80%;
+    border-radius: 10px;
+    background-color: var(--white);
+}
+
+.main .func-title{
+    display: grid;
+    place-content: center;
+}
+
+.func{
+    display: grid;
+    gap: var(--extreme-spacing);
+    grid-template-columns: auto 1fr;
+}
+
+.image-holder {
+    overflow: hidden;
+    display: grid;
+    place-content: center;
+}
+
+.image-holder img{
+    width: 400px;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.movie-info{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--extreme-spacing);
+}
+
+.title{
+    font-size: 22px;
+}
+
+.room select{
+    border-radius: 5px;
+}
+
+.schedule-wrapper{
+    flex-grow: 1;
+    position: relative;
+}
+
+.spawn-date, .chosen-date, .chosen-schedule{
+    display: flex;;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--extreme-spacing)
+}
+
+.submit input{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    /*transform: translateX(-50%);*/
+    background-color: var(--gray);
+    min-width: 80px;
+    color: var(--white);
+    border-radius: 5px;
+}
+
+.submit input:hover{
+    background: var(--black);
+}
+
+@media all and (max-width: 1150px) {
+    .image-holder img{
+        width: 200px;
+    }
+
+    .func{
+        grid-template-columns: 1fr;
+    }
+
+    .submit{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .submit input{
+        position: static;
+    }
+}
+
+.gray{
+    color: darkgray;
+}

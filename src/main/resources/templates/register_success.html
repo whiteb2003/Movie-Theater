@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <script>
+        function successVerify() {
+            Swal.fire({
+                title: 'Congratulations!',
+                html: 'You verify successfully! Click OK to login.',
+                icon: 'success',
+                width: 600,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then((result) => {
+                window.location = "http://localhost:8080/login"
+            });
+        }
+        window.onload = function () {
+            successVerify();
+        }
+    </script>
+</body>
+
+</html>

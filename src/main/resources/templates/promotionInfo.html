@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Cinema</title>
+    <link rel="stylesheet" th:href="@{/css/movie.css}">
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+
+    <div class="main">
+        <div class="func-wrapper important">
+            <div class="func-title mb-30 rel">
+                <h2>Promotion Information</h2>
+                <a th:href="'/promo/manage'" class="back">
+                    <button type="button">Back</button>
+                </a>
+            </div>
+            <div class="add mb-30" style="display: flex; align-items: center;justify-content: flex-end">
+                <a th:href="@{/promo/update/__${promotion.promotion_id}__}">
+                    <button class="p-10" style="background: var(--gray); border-radius: 5px; color: var(--white)">Edit
+                        Promo</button>
+                </a>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Title</span>
+                        <input type="text" th:value="${promotion.title}" readonly style="overflow-wrap: break-word;">
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Detail</span>
+                        <div class="border-1 bg-light border rounded shadow-sm p-2 mb-2"
+                            style="background-color: #E9ECEF; overflow-wrap: break-word;">
+                            <div th:utext="${promotion.detail}" readonly></div>
+                        </div>
+
+                    </label>
+                </div>
+            </div>
+            <div class="date-wrapper">
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">Start Date</span>
+                            <input type="text" th:value="${#dates.format(promotion.startDate, 'yyyy-MM-dd')}" readonly>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">End Date</span>
+                            <input type="text" th:value="${#dates.format(promotion.endDate, 'yyyy-MM-dd')}" readonly>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="discount-wrapper">
+                <!-- <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Discount Amount</span>
+                        <input type="text" th:value="${promotion.discountValue}" readonly>
+                    </label>
+                </div>
+            </div> -->
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">Discount Percentage</span>
+                            <input type="text" th:value="${promotion.discountPercentage}" readonly>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Status</span>
+                        <input type="text" th:value="${promotion.status}" readonly>
+                    </label>
+                </div>
+            </div>
+            <div class=" file-thing promo">
+                <div class="input-half-wrapper">
+                    <div>
+                        <label>
+                            <span class="field" style="color: var(--dark-blue)">Promotion Image</span>
+                            <img th:src="${promotion.image}" style="max-width: 200px;" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="footer.html"></div>
+
+</body>
+
+</html>

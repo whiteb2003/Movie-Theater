@@ -1,0 +1,150 @@
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.sheader {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--extreme-spacing);
+
+}
+
+.data {
+    flex: 1;
+}
+
+.extra {
+    margin-bottom: 5px;
+}
+
+.sgeneros a {
+    margin-right: 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.sgeneros a:hover {
+    text-decoration: underline;
+}
+
+.single_tabs {
+    border-bottom: solid 3px rgba(255, 255, 255, 0.08);
+    width: 100%;
+    overflow: auto;
+}
+
+.smenu {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--extreme-spacing)
+}
+
+.smenu li {
+    position: relative;
+    list-style: none;
+    padding: var(--spacing);
+    /*border-bottom: 2px solid var(--white);*/
+}
+
+.smenu li::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background-color: var(--gray);
+    transition: 0.2s;
+}
+
+.smenu li:hover::after {
+    width: 100%;
+}
+
+.smenu li a {
+    color: var(--dark-blue);
+}
+
+.smenu li a {
+    text-decoration: none;
+    padding-bottom: 5px;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+/*.smenu li a:hover {*/
+/*    border-color: rgba(255, 255, 255, 0.5);*/
+/*}*/
+
+.sbox {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.all {
+    width: 100%;
+}
+
+.wp-content {
+    width: 100%;
+}
+
+.wp-content p {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.poster {
+    display: grid;
+    place-content: center;
+}
+
+.tukhoa {
+    color: #ccc;
+    font-size: 12px;
+}
+
+.poster img {
+    width: 200px; /* Chiều rộng của poster */
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    background-color: var(--white-smoke);
+}
+
+.book-btn {
+    margin: var(--spacing) 0;
+    display: grid;
+    place-content: center;
+    max-width: 200px;
+    background-color: var(--gray);
+    color: var(--white);
+    border-radius: 5px;
+}
+
+.book-btn:hover {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+@media all and (max-width: 950px) {
+    .sheader {
+        grid-template-columns: 1fr;
+    }
+
+    body .main .func-wrapper {
+        width: 100%;
+    }
+}
+
+li.selected::after{
+    width: 100%;
+}
+
+.smenu li.selected a{
+    color: var(--black);
+}

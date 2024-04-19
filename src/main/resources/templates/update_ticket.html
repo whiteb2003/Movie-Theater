@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual Update Ticket</title>
+    <link rel="stylesheet" th:href="@{/css/specificMovie.css}">
+    <link rel="stylesheet" th:href="@{/css/alert.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+<body>
+<div th:replace="nav.html"></div>
+<div class="blur"></div>
+<div class="danger">
+    <i class="fas fa-times-circle shine"></i>
+    &nbsp; &nbsp;
+    <span id="message"></span>
+</div>
+<div class="main">
+    <div class="func-wrapper important">
+        <div class="rel">
+            <a th:href="@{/ticket/manage}" class="back">
+                <button type="button">Back</button>
+            </a>
+        </div>
+        <div class="seat-display">
+            <div class="seat-holder">
+                <!--                <div th:each="row : ${seats}" class="seat-row mb-30">-->
+                <!--                    <div th:each="seat : ${row}"-->
+                <!--                         th:class="${'seat-column'}"-->
+                <!--                         th:id="${seat.id}"-->
+                <!--                         th:classappend="${!seat.status ? 'booked ' : ''} + ${!seat.status ? '' : seat.type}"-->
+                <!--                         th:text="${seat.position}">-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <div class="seat-holder">
+                    <div th:each="row : ${seats}" class="seat-row mb-30">
+                        <div th:each="seat : ${row}"
+                             th:class="${'seat-column'}"
+                             th:id="${seat.Ticket_id}"
+                             th:classappend="${seat.ticketStatus == null ? 'empty-booked' : seat.ticketStatus}"
+                             th:attr="data-user =${seat.username + ' --- ' + seat.usermail}"
+                             th:text="${seat.Seat_position}">
+                        </div>
+                    </div>
+                </div>
+                <div class="user-details mb-30">
+<!--                    <div th:each="row : ${seats}" class="user-row mb-30">-->
+<!--                        <div th:each="seat : ${row}"-->
+<!--                             th:unless="${seat == null or seat.username == null}"-->
+<!--                             th:id="${seat.Ticket_id}"-->
+<!--                             th:text="${seat.username + ' ' + seat.usermail}">-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+            <div class="seat-info-holder">
+                <div class="seat-info">
+                    <div>
+                        <div class="illustration select"></div>
+                        <span>Seat is selected</span>
+                    </div>
+                    <div>
+                        <div class="illustration booked"></div>
+                        <span>Seat was dropped</span>
+                    </div>
+                    <div>
+                        <div class="illustration VIP"></div>
+                        <span>Seat was paid</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <form method="post" th:action="@{/seatchose/{movieId}/{mrdId}/{timeID}
+                   (movieId=${movie.movie_id}, mrdId=${mrdId}, timeID = ${timeID})}" class="seat-form">
+            <input type="submit" value="Continue">
+        </form> -->
+        <div class="flex">
+            <form th:action="${'/ticket/ms_id/update/' + movie_schedule_id}" method="post" class="seat-form">
+                <input type="submit" class="button pend" value="Set Pending" name="act"/>
+                <input type="submit" class="button paid" value="Set Paid" name="act"/>
+                <input type="submit" class="button cancel" value="Set Canceled" name="act"/>
+                <input type="submit" class="button drop" value="Set Dropped" name="act"/>
+            </form>
+        </div>
+        <input type="hidden" id="s" th:value="${error}"/>
+    </div>
+</div>
+<script th:src="@{/js/ticketStatus.js}"></script>
+<div th:replace="footer.html"></div>
+</body>
+</html>

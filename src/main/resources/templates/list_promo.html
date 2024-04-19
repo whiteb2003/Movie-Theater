@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promo</title>
+    <link rel="stylesheet" th:href="@{/css/book.css}">
+</head>
+<body>
+<div th:replace="nav.html"></div>
+<div class="blur"></div>
+<main class="main">
+    <div class="func-wrapper important mt-60 p-30">
+        <div class="func-title mb-30 rel">
+            <h2>Promo</h2>
+            <a th:href="@{/home}" class="back" style="left:0">
+                <button type="button">Back</button>
+            </a>
+        </div>
+        <div class="promo-wrapper">
+            <!--           div list here-->
+            <div th:each="p : ${promotion}">
+                <div class="promo p-10">
+                    <span class="promo-title mb-30" th:text="${p.title}">Title</span>
+                    <div class="date">
+                        <span style="font-weight: 500">Date: </span>
+                        <span th:text="${#dates.format(p.startDate, 'dd/MM')} + ' - ' + ${#dates.format(p.endDate, 'dd/MM')}">1/4 - 5/4</span>
+                    </div>
+                    <div>
+                        <span style="font-weight: 500">Discount: </span>
+                        <span th:text="${p.discountValue != 0 && p.discountValue != null ? p.discountValue + 'VND' : ''} + ${p.discountValue == 0 || p.discountPercentage == 0 || p.discountValue == null || p.discountPercentage == null ? '' : ' and '} + ${p.discountPercentage != 0 && p.discountPercentage != null ? p.discountPercentage + '%' : ''}">1/4 - 5/4</span>
+                    </div>
+                    <div style="width: 100%; overflow: hidden">
+                        <img style="width: 100%; aspect-ratio: 4/3; object-fit: cover"
+                             th:src="@{'/images/'+${p.image}}">
+                    </div>
+                    <!--                    <div class="mb-30">-->
+                    <!--                        <span style="font-weight: 500">Discount: </span>-->
+                    <!--                        <span th:text="${p.discountValue}">20,000VND</span>-->
+                    <!--                        <span th:text="${p.discountPercentage + '%'}">20%</span>-->
+                    <!--                    </div>-->
+                    <div class="detail-promo rel mt-10" th:utext="${p.detail}">
+                    </div>
+                </div>
+            </div>
+            <!--            end here-->
+            <span id="notif"></span>
+        </div>
+    </div>
+
+</main>
+<div th:replace="footer.html"></div>
+<script>
+    let promos = document.querySelectorAll('.promo');
+    if (promos.length === 0) {
+        let notif = document.getElementById("notif");
+        notif.innerText = "No promo available!";
+        notif.style.color = red;
+    }
+</script>
+</body>
+</html>

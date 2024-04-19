@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Booking</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+    <main>
+        <div class="user-sidebar">
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list rel">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <span><img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="bar"></span>
+                <ul class="segments">
+                    <li th:if="${isManager}"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')" class="checked"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li><a th:href="@{/invoice/list}">Invoice</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+        <form th:action="@{/ticket/manage/page/1}">
+            <div class="func-screen rel">
+                <div class="dropdown">
+                    <img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="small-bar dropdown-toggle"
+                        id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                        <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/account/manage}">Account</a></li>
+                        <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employee/manage}">Employee</a>
+                        </li>
+                        <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/ticket/manage}">Booking
+                                History</a></li>
+                        <li><a class="dropdown-item" th:href="@{/invoice/list}">Invoice</a></li>
+                        <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/movies/manage}">Movie</a></li>
+                        <li th:if="${isManager}" class="checked"><a class="dropdown-item"
+                                th:href="@{/cinemarooms}">Room</a></li>
+                        <li><a class="dropdown-item" th:href="@{/promo/manage}">Promotion</a></li>
+                    </ul>
+                </div>
+                <div class="management-wrapper important rel">
+                    <h2 class="func-name">
+                        Ticket Management
+                    </h2>
+                    <div class="all-partial mb-30;" th:classappend="${!isManager ? 'invisible' : ''}">
+                        <a th:href="${'/ticket/manage/page/1'}"
+                            th:class="${oldName != username ? 'current' : ''}">All</a>
+                        <a th:href="${'/ticket/manage/page/1?movieNameEn=&movieDate=&schedule=&seatPosition=&username=' + oldName}"
+                            th:class="${oldName == username ? 'current' : ''}">Your</a>
+                    </div>
+                    <div class="filter mb-30">
+                        <div class="filter-search">
+                            <input type="text" name="movieNameEn" th:value="${movieNameEn}" class="form-control rounded"
+                                placeholder="Search movie" aria-label="Search" aria-describedby="search-addon" />
+                            <input type="Date" name="movieDate" th:value="${movieDate}" class="form-control rounded"
+                                placeholder="Search date" aria-label="Search" aria-describedby="search-addon" />
+                            <input type="time" name="schedule" th:value="${schedule}" class="form-control rounded"
+                                placeholder="Search schedule" aria-label="Search" aria-describedby="search-addon" />
+                            <input type="text" name="roomName" th:value="${room_name}" class="form-control rounded"
+                                placeholder="Search room" aria-label="Search" aria-describedby="search-addon" />
+                            <span class="input-group-text border-0" id="search-addon">
+                                <button type="submit" class="search-btn"><img
+                                        th:src="@{/icons/magnifying-glass-solid.svg}"></button></span>
+                        </div>
+                    </div>
+
+                    <input type="text" name="username" th:value="${username}" class="invisible" />
+
+                    <div class="room-manage">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="name-col">Movie</th>
+                                    <th>Date</th>
+                                    <th class="ro" style="min-width: 150px;">Schedule</th>
+                                    <th class="ro">Room</th>
+                                    <th class="btn-wrapper">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="movie_schedule : ${movie_schedules}">
+                                    <td th:text="${movie_schedule.movie_name}">Movie</td>
+                                    <td th:text="${movie_schedule.movie_date}">Date</td>
+                                    <td style="min-width: 150px;" th:text="${movie_schedule.schedule}">Schedule</td>
+                                    <td th:text="${movie_schedule.room_name}"></td>
+                                    <td class="btns">
+                                        <a th:href="${'/ticket/ms_id/' + movie_schedule.movie_schedule_id}">Update</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <nav aria-label="Page navigation example" class="paging-wrapper">
+                        <ul th:if="${totalPage>1}" class="pagination justify-content-center flex-wrap">
+                            <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/ticket/manage/page/1'+ ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}}">First</a>
+                            </li>
+                            <li th:class="${currentPage > 1 ?'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/ticket/manage/page/' + ${currentPage - 1}+ ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}}">Previous</a>
+                            </li>
+                            <th:block th:if="${totalPage <= 4}">
+                                <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,totalPage)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/ticket/manage/page/'+${i}} + ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${totalPage > 4}">
+                                <th:block th:if="${currentPage <= 2 || currentPage > totalPage - 2}">
+                                    <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,2)}"
+                                        th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/ticket/manage/page/'+${i}} + ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}">[[${i}]]</a>
+                                    </li>
+
+                                    <a class="page-link"
+                                        th:href="@{'/ticket/manage/page/'+3} + ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}">...</a>
+
+                                    <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(totalPage-1,totalPage)}"
+                                        th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/ticket/manage/page/'+${i}} + ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}">[[${i}]]</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${currentPage > 2 && currentPage < totalPage - 1}">
+                                    <a class="page-link"
+                                        th:href="@{'/ticket/manage/page/' + ${currentPage - 1}+ ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}}">...</a>
+
+                                    <li th:if="${totalPage!=0}"
+                                        th:each="i:${#numbers.sequence(currentPage-1,currentPage+1)}"
+                                        th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/ticket/manage/page/'+${i}} + ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}">[[${i}]]</a>
+                                    </li>
+
+                                    <a class="page-link"
+                                        th:href="@{'/ticket/manage/page/' + ${currentPage + 1}+ ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}}">...</a>
+                                </th:block>
+                            </th:block>
+
+
+                            <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                                <a class="page-link"
+                                    th:href="@{'/ticket/manage/page/' + ${currentPage + 1}+ ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}}">Next</a>
+                            </li>
+                            <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                                <a class="page-link"
+                                    th:href="@{'/ticket/manage/page/' + ${totalPage}+ ${movieNameEn!=null?'?movieNameEn='+movieNameEn:''}+ ${movieDate!=null?'&movieDate='+movieDate:''}+ ${schedule!=null?'&schedule='+schedule:''}+ ${seatPosition!=null?'&seatPosition='+seatPosition:''}+${username!=null?'&username='+username:''}}">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </form>
+
+    </main>
+    <div th:replace="footer.html"></div>
+
+</body>
+
+</html>

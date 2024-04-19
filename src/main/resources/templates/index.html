@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Cinema</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+    <div class="wrapper mt-60">
+        <div class="slideshow mb-60">
+            <div class="bighit mb-30">
+                <h2 class="ph-10 hit important" style="margin: 0">BIG HIT AT THEATER</h2>
+            </div>
+            <div class="under-bg rel important">
+                <div class="prev"><img th:src="@{/icons/angle-left-solid.svg}" style="width: 40px;" alt="Prev"></div>
+
+            <div th:each="m : ${movies}" class="banner-holder showing">
+                <div class="empty">
+                    <a style="height: 100%; display: flex;align-items: center; justify-content: center" th:href="@{'/movies/movie_details/'+${m.getMovie_id()}}">
+                        <img style="height: 100%" th:src="${'/images/' + m.banner}"></a>
+                </div>
+            </div>
+
+                <div class="next"><img th:src="@{/icons/angle-right-solid.svg}" style="width: 40px;" alt="Next"></div>
+            </div>
+        </div>
+        <div class="search mt-30">
+            <form th:action="@{/page/1/1}" class="input-group rounded" style="align-items: center">
+                <input type="text" name="keyword" th:value="${keyword}" class="form-control rounded"
+                    placeholder="Search" aria-label="Search" aria-describedby="search-addon" style="height: 40px" />
+                <span class="input-group-text border-0 p-0" id="search-addon">
+                    <button type="submit" class="search-movie"><img
+                            th:src="@{/icons/magnifying-glass-solid.svg}"></button>
+                </span>
+            </form>
+        </div>
+        <div class="content-container">
+            <div class="movie-list-container rel">
+                <h2 class="movie-list-title ph-10 important">IN THEATER</h2>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div th:each="movie : ${list}" class="movie-list-item">
+                            <div class="inner-movie-item">
+                                <img class="movie-list-item-img" th:src="@{${movie.PosterImagePath}}" alt="">
+                                <!--                            <input type="hidden" th:value="${movie.shortDescription}" class="info-short">-->
+                                <!--                            <div class="short-des"></div>-->
+                                <a class="movie-list-item-button first ph-10"
+                                    th:href="@{'/movies/movie_details/' + ${movie.movie_id}}">Details
+                                </a>
+                                <a class="movie-list-item-button second ph-10"
+                                    th:href="@{'/datechose/' + ${movie.movie_id}}">Booking</a>
+                                <button type="button" class="movie-list-item-button third ph-10"
+                                        th:attr="trailer=${movie.getTrailer()}, data-id=${movie.getMovie_id()}"
+                                        onclick="openTrailerModal(this)">Trailer</button>
+                            </div>
+                            <span class="movie-title ph-10" th:text="${movie.movie_title_en}">Borderlands</span>
+                            <div class="time-date">
+                                <span th:text="${movie.duration}" class="duration mh-10"
+                                    style="padding-right: var(--spacing)"></span>
+                                <span th:text="${movie.release_date}" class="ph-10">3/8/2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="paging-wrapper mt-30 mb-30">
+                    <nav aria-label="Page navigation example">
+                        <ul th:if="${totalPage>1}" class="pagination justify-content-center flex-wrap">
+                            <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/page/1/' + ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">First</a>
+                            </li>
+                            <li th:class="${currentPage > 1 ?'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${currentPage - 1}+ '/' + ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">Previous</a>
+                            </li>
+                            <th:block th:if="${totalPage <= 4}">
+                                <li th:each="i:${#numbers.sequence(1,totalPage)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/page/' +${i} + '/'+ ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${totalPage > 4}">
+                                <th:block th:if="${currentPage <= 2 || currentPage > totalPage - 2}">
+                                    <li th:each="i:${#numbers.sequence(1,2)}"
+                                        th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/page/' +${i} + '/'+ ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">[[${i}]]</a>
+                                    </li>
+
+                                    <a class="page-link"
+                                        th:href="@{'/page/' +3 + '/'+  ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">...</a>
+
+                                    <li th:each="i:${#numbers.sequence(totalPage-1,totalPage)}"
+                                        th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/page/' +${i} + '/'+  ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">[[${i}]]</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${currentPage > 2 && currentPage < totalPage - 1}">
+                                    <a class="page-link"
+                                        th:href="@{'/page/' +${currentPage-1} + '/'+  ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">...</a>
+
+                                    <li th:each="i:${#numbers.sequence(currentPage-1,currentPage+1)}"
+                                        th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/page/' +${i} + '/'+  ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">[[${i}]]</a>
+                                    </li>
+
+                                    <a class="page-link"
+                                        th:href="@{'/page/' +${currentPage+1} + '/'+  ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">...</a>
+                                </th:block>
+                            </th:block>
+
+
+                            <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${currentPage + 1}+ '/'+ ${currentPageUP} + ${keyword!=null?'?keyword='+keyword:''}}">Next</a>
+                            </li>
+                            <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${totalPage}+ '/' + ${currentPageUP}+ ${keyword!=null?'?keyword='+keyword:''}}">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="movie-list-container second rel">
+                <h2 class="movie-list-title ph-10 important">UPCOMING</h2>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div th:each="movie : ${listUpComming}" class="movie-list-item">
+                            <div class="inner-movie-item">
+                                <img class="movie-list-item-img" th:src="@{${movie.PosterImagePath}}" alt="">
+                                <a class="movie-list-item-button first ph-10"
+                                    th:href="@{'/movies/movie_details/' + ${movie.movie_id}}">Details
+                                </a> <a class="movie-list-item-button second ph-10"
+                                    th:href="@{'/datechose/' + ${movie.movie_id}}">Booking</a>
+                                <button type="button" class="movie-list-item-button third ph-10"
+                                        th:attr="trailer=${movie.getTrailer()}, data-id=${movie.getMovie_id()}"
+                                        onclick="openTrailerModal(this)">Trailer</button>
+                            </div>
+                            <span class="movie-title ph-10" th:text="${movie.movie_title_en}">Borderlands</span>
+                            <div class="time-date">
+                                <span th:text="${movie.duration}" class="duration mh-10"
+                                    style="padding-right: var(--spacing)"></span>
+                                <span th:text="${movie.release_date}" class="ph-10">3/8/2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="paging-wrapper">
+                    <nav aria-label="Page navigation example">
+                        <ul th:if="${totalPageUpComming>1}" class="pagination justify-content-center flex-wrap">
+                            <li th:class="${currentPageUP > 1 ? 'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${currentPage} + '/1' + ${keyword != null ? '?keyword=' + keyword : ''}}">First</a>
+                            </li>
+                            <li th:class="${currentPageUP > 1 ?'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${currentPage} + '/' + ${currentPageUP - 1} + ${keyword != null ? '?keyword=' + keyword : ''}}">Previous</a>
+                            </li>
+                            <th:block th:if="${totalPageUpComming <= 4}">
+                                <li th:if="${totalPageUpComming!=0}"
+                                    th:each="i:${#numbers.sequence(1,totalPageUpComming)}"
+                                    th:class="${currentPageUP!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/page/' + ${currentPage} + '/' + ${i} + ${keyword != null ? '?keyword=' + keyword : ''}}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${totalPageUpComming > 4}">
+                                <th:block th:if="${currentPageUP <= 2 || currentPageUP > totalPageUpComming - 2}">
+                                    <li th:if="${totalPageUpComming!=0}" th:each="i:${#numbers.sequence(1,2)}"
+                                        th:class="${currentPageUP!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/page/' + ${currentPage} + '/' + ${i} + ${keyword != null ? '?keyword=' + keyword : ''}}">[[${i}]]</a>
+                                    </li>
+
+                                    <a class="page-link"
+                                        th:href="@{'/page/' + ${currentPage} + '/' + 3 + ${keyword != null ? '?keyword=' + keyword : ''}}">...</a>
+
+                                    <li th:if="${totalPageUpComming!=0}"
+                                        th:each="i:${#numbers.sequence(totalPageUpComming-1,totalPageUpComming)}"
+                                        th:class="${currentPageUP!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/page/' + ${currentPage} + '/' + ${i} + ${keyword != null ? '?keyword=' + keyword : ''}}">[[${i}]]</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${currentPageUP > 2 && currentPageUP < totalPageUpComming - 1}">
+                                    <a class="page-link"
+                                        th:href="@{'/page/' +${currentPage} + '/'+  ${currentPageUP-1} + ${keyword!=null?'?keyword='+keyword:''}}">...</a>
+
+                                    <li th:if="${totalPageUpComming!=0}"
+                                        th:each="i:${#numbers.sequence(currentPageUP-1,currentPageUP+1)}"
+                                        th:class="${currentPageUP!=i ? 'page-item' : 'page-item disabled'}">
+                                        <a class="page-link"
+                                            th:href="@{'/page/' + ${currentPage} + '/' + ${i} + ${keyword != null ? '?keyword=' + keyword : ''}}">[[${i}]]</a>
+                                    </li>
+
+                                    <a class="page-link"
+                                        th:href="@{'/page/' +${currentPage} + '/'+  ${currentPageUP+1} + ${keyword!=null?'?keyword='+keyword:''}}">...</a>
+                                </th:block>
+                            </th:block>
+
+
+                            <li th:class="${currentPageUP < totalPageUpComming ? 'page-item' : 'page-item disabled' }">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${currentPage} + '/' + ${currentPageUP + 1} + ${keyword != null ? '?keyword=' + keyword : ''}}">Next</a>
+                            </li>
+                            <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                                <a class="page-link"
+                                    th:href="@{'/page/' + ${totalPageUpComming} + '/' + ${currentPage} + ${keyword != null ? '?keyword=' + keyword : ''}}">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="trailerModal" class="modal" style="display: none">
+        <div>
+            <span class="close" onclick="closeTrailerModal()">&times;</span>
+            <iframe width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+    <div th:replace="footer.html"></div>
+    <script th:src="@{/js/app.js}"></script>
+    <script th:src="@{/js/index.js}"></script>
+</body>
+
+</html>

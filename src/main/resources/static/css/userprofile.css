@@ -1,0 +1,110 @@
+.profile-head,
+.edit-profile {
+    padding: var(--extreme-spacing);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.required-star {
+    color: var(--red);
+}
+
+.form-group {
+    margin-bottom: var(--extreme-spacing);
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.help {
+    color: #888;
+    font-size: 14px;
+}
+
+.user-profile-thumb img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.btn {
+    margin-right: 10px;
+}
+
+.main{
+    margin-top: 50px;
+    padding-bottom: 150px;
+}
+
+.row.flex{
+    margin: 0px 30px;
+}
+
+.profile-bx, #edit-profile{
+    background-color: var(--white);
+    border-radius: 10px;
+}
+
+.img_user{
+    height: 300px;
+    length: auto;
+}
+.profile-tabnav {
+    display: flex;
+    flex-direction: column;
+}
+.nav-item {
+    margin-bottom: 10px;
+}
+
+.img_user{
+    height: 300px;
+}
+/*.profile-tabnav {*/
+/*    font-size: 16px;*/
+/*    font-weight: 500;*/
+/*    display: grid;*/
+/*    place-content: center;*/
+/*}*/
+
+.profile-tabnav .nav-tabs{
+    flex-direction: column;
+}
+
+.profile-tabnav .nav-tabs .nav-link.active{
+    background: var(--gray);
+    color: var(--white);
+    border-radius: 5px;
+}
+
+.nav-item {
+    margin-bottom: 10px;
+}
+
+.save,.cancel{
+    border-radius: 5px;
+    color: var(--white);
+}
+
+.save{
+    background: var(--dark-blue);
+}
+
+.save:hover{
+    background: var(--blue);
+}
+
+.cancel{
+    background: var(--gray);
+}
+
+.cancel:hover{
+    background: var(--black);
+}
+
+body .form-check-inline{
+    display: flex;
+    align-items: center;
+}

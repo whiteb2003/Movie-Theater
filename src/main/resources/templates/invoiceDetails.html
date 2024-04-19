@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Details</title>
+    <link rel="stylesheet" th:href="@{/css/movie.css}">
+</head>
+
+<body>
+<div th:replace="nav.html"></div>
+<div class="main">
+    <div class="blur"></div>
+    <div class="func-wrapper important">
+        <a th:href="@{/invoice/list}"><button style="color: var(--red); background: transparent" type="button">Back</button></a>
+
+        <h2>Invoice Confirmation</h2>
+
+        <h3>Invoice Details</h3>
+        <p>Invoice Code: <span style="font-weight: 500" th:text="${invoice.code}"></span></p>
+        <p>Movie Title: <span style="font-weight: 500"  th:text="${invoice.movie_title_en}"></span></p>
+        <p>Date: <span style="font-weight: 500"   th:text="${invoice.movie_date}"></span> Time: <span style="font-weight: 500"   th:text="${invoice.schedule}"></span></p>
+        <p>Username: <span style="font-weight: 500"  th:text="${invoice.username}"></span></p>
+        <p>Invoice Price: <span style="font-weight: 500"  th:text="${invoice.price}"></span></p>
+        <p>Invoice Status: <span style="font-weight: 500"  th:text="${invoice.status}"></span></p>
+        <p>Use Point: <span style="font-weight: 500"  th:text="${invoice.usePoint} ? 'Yes' : 'No'"></span></p>
+        <p>Promotion:
+            <span th:unless="${selectedPromotion != null}" >No Promotion</span>
+            <span style="font-weight: 500" th:if="${selectedPromotion != null}" th:text="${selectedPromotion.title}"></span>
+        </p>
+        <h2>Tickets</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Index</th>
+                <th th:if="${isManager}">Ticket ID</th>
+                <th>Seat Position</th>
+                <th th:if="${isManager}">Status</th>
+                <!-- Add more columns for other ticket properties -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ticket, iterStat : ${tickets}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:if="${isManager}" th:text="${ticket.ticket_id}"></td>
+                <td th:text="${ticket.seat.position}"></td>
+                <td th:if="${isManager}" th:text="${ticket.status}"></td>
+                <!-- Display other ticket properties -->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="footer.html"></div>
+</body>
+
+</html>

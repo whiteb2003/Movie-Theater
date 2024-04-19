@@ -1,0 +1,456 @@
+a {
+    color: var(--black);
+
+}
+
+main {
+    min-height: 100%;
+    margin: var(--extreme-spacing);
+    padding-bottom: 200px;
+    padding-top: 50px;
+}
+
+.user-sidebar {
+    width: 300px;
+    padding: var(--extreme-spacing);
+    background-color: var(--black);
+    position: fixed;
+    border-radius: 5px;
+    color: var(--white);
+    overflow: hidden;
+}
+
+.navigate-list p {
+    font-size: 24px;
+    font-weight: 500;
+    display: grid;
+    place-content: center;
+
+}
+
+.navigate-list .segments {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing);
+    transition: max-height 300ms linear;
+    overflow: hidden;
+    max-height: 1000px;
+}
+
+.navigate-list.close .segments {
+    max-height: 0;
+}
+
+.navigate-list li {
+    list-style: none;
+    width: 100%;
+    border: 2px solid var(--white-smoke);
+    background-color: var(--gray);
+    border-radius: 5px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.navigate-list li.checked {
+    color: var(--black);
+    background-color: var(--white-smoke);
+}
+
+.navigate-list li a {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    padding: var(--spacing);
+}
+
+.navigate-list li a::after{
+    display: block;
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 100%;
+    right:0;
+    top:0;
+    background: var(--red);
+    transition: width 100ms ease-out;
+}
+
+.navigate-list li a:hover::after {
+    width: 30%;
+}
+
+.navigate-list li a:hover{
+    color: var(--white);
+}
+.navigate-list li.checked a:hover{
+    color: var(--black)
+}
+
+
+.func-screen {
+    margin-left: 330px;
+}
+
+.management-wrapper {
+    background-color: var(--white);
+    border-radius: 10px;
+    padding: var(--extreme-spacing);
+    min-height: 770px;
+}
+
+.management-wrapper .paging-wrapper a {
+    color: var(--dark-blue)
+}
+
+.paging-wrapper .page-link:hover {
+    color: var(--blue);
+}
+
+.management-wrapper .func-name {
+    margin: 0;
+    font-weight: 500;
+    display: grid;
+    place-content: center;
+    margin-bottom: var(--extreme-spacing);
+}
+
+.navi-manage {
+    display: grid;
+    place-content: center;
+}
+
+.search-add {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--extreme-spacing);
+    height: min-content;
+    gap: var(--extreme-spacing);
+}
+
+/*.movie-navigate{*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    background-color: var(--white-smoke);*/
+/*    margin-bottom: var(--extreme-spacing);*/
+/*    border-radius: 5px;*/
+/*    overflow: hidden;*/
+/*}*/
+
+/*.movie-navigate a{*/
+/*    color: var(--black);*/
+/*    display: grid;*/
+/*    place-content: center;*/
+/*    width: 100px;*/
+/*    font-size: 18px;*/
+/*    cursor: pointer;*/
+/*    padding: var(--spacing);*/
+/*}*/
+
+
+body main .func-screen .search-add a {
+    max-width: 120px;
+    display: block;
+    text-decoration: none;
+    color: var(--white);
+    background-color: var(--dark-green);
+    border-radius: 5px;
+    max-height: 44px;
+    white-space: nowrap;
+}
+
+body main .func-screen .search-add a:hover {
+    color: var(--white);
+    background-color: var(--green);
+
+}
+
+.input-group.rounded {
+    max-width: 400px;
+    flex-shrink: 1;
+}
+
+.movie-list-holder {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--extreme-spacing);
+    width: 100%;
+}
+
+.movie {
+    border-radius: 5px;
+    padding: var(--spacing);
+    background-color: var(--white-smoke);
+    display: flex;
+    gap: var(--spacing);
+}
+
+.movie-list-holder .movie a:hover {
+    color: var(--black);
+}
+
+.movie .movie-name {
+    font-size: 20px;
+    font-weight: 500;
+
+}
+
+.movie-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.movie img {
+    width: 120px;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 5px;
+    outline: 2px solid var(--gray);
+}
+
+.movie-info .movie-name{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-list-holder .edit-btn {
+    width: 80px;
+    display: grid;
+    place-content: center;
+    padding: 5px;
+    align-self: center;
+}
+
+.small-bar{
+    display: none;
+}
+
+@media all and (max-width: 1600px) {
+    .func-screen {
+        margin: 0;
+    }
+
+    .user-sidebar {
+        left: -300px;
+    }
+
+    .small-bar{
+        display: block;
+    }
+}
+
+@media all and (max-width: 1200px) {
+    .movie-list-holder {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .movie-manage{
+        margin-bottom: 90px;
+    }
+}
+
+@media all and (max-width: 800px) {
+    .movie-list-holder {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+
+}
+
+body .paging-wrapper {
+    color: var(--black);
+}
+
+.room-manage table {
+    width: 100%;
+}
+
+.room-manage table tr td,
+.room-manage table th {
+    padding: var(--spacing);
+}
+
+.room-manage table th {
+    border-right: 2px solid var(--white);
+}
+
+.room-manage thead tr {
+    width: 100%;
+    background-color: var(--gray);
+    color: var(--white);
+}
+
+tbody tr:nth-child(even){
+    background: lightgray;
+}
+
+.room-manage table tbody tr {
+    border-bottom: 1px solid darkgray;
+}
+
+.name-col {
+    min-width: 100px;
+}
+
+.ro,
+.co {
+    max-width: 50px;
+}
+
+.btn-wrapper {
+    width: 300px;
+}
+
+.btns {
+    display: flex;
+    gap: var(--extreme-spacing);
+    align-items: center;
+}
+
+body main .func-screen table .btns a {
+    color: var(--dark-blue);
+    text-decoration: underline;
+}
+
+body main .func-screen table .btns a:hover {
+    color: var(--gray);
+    text-decoration: underline;
+}
+
+.button {
+    min-width: 80px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button button {
+    background-color: var(--dark-green);
+    padding: var(--spacing);
+    min-width: 80px;
+    display: grid;
+    place-content: center;
+    color: var(--white);
+    border-radius: 5px;
+}
+
+.button button:hover{
+    background: var(--green);
+}
+
+.filter-search {
+    display: flex;
+    gap: var(--spacing);
+    align-items: center;
+}
+
+.filter-search input {
+    max-width: 300px;
+}
+
+.all-partial,
+.movie-navigate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--extreme-spacing);
+}
+
+.all-partial a,
+.movie-navigate a {
+    color: var(--dark-blue);
+    font-size: 18px;
+    width: 100px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.movie-navigate a.current, .all-partial a.current{
+    outline: 2px solid var(--red);
+    color: var(--gray);
+}
+
+.add {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add button {
+    background-color: var(--dark-green);
+    padding: var(--spacing);
+    border-radius: 5px;
+    color: var(--white);
+}
+
+.add button:hover {
+    background-color: var(--green);
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing)
+}
+
+#myModal {
+    position: absolute;
+}
+
+main #myModal .modal-dialog {
+    position: relative;
+    top: 30%;
+    transform: translateY(-50%);
+    margin: 0 auto;
+}
+
+.bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+.small-bar{
+    position: absolute;
+    top: 30px;
+    left:30px;
+    z-index: 6;
+    cursor: pointer;
+}
+
+.func-screen .rel .paging-wrapper{
+    position: absolute;
+    bottom: var(--extreme-spacing);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.set-cancel-button {
+    background-color: #f08080; /* Màu đỏ */
+    color: #000; /* Màu đen */
+    border: none;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.set-cancel-button:hover {
+    background-color: #c82333; /* Màu đỏ khi hover */
+}
+.error-message {
+    color: red;
+}

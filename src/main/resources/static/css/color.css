@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+    --white: rgb(238, 238, 238);
+    --second-theme: rgb(239, 235, 219);
+    --black: rgb(34, 40, 49);
+    --gray: rgb(57, 62, 70);
+    --white-smoke: #E9ECEF;
+    --green: #4DBF00;
+    --spacing: 10px;
+    --extreme-spacing: 30px;
+    --red: rgb(214, 90, 49);
+    --blue: #007BFF;
+    --light-bg: #e5e9eae0;
+    --dark-blue: rgb(11, 94, 215);
+    --dark-green: #28A745;
+}
+
+*, ::after, ::before {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    box-sizing: border-box;
+}
+
+.main-bg-color {
+    background-color: var(--white) !important;
+
+}
+
+.second-bg-color {
+    background-color: var(--second-theme) !important;
+}
+
+body a {
+    text-decoration: none;
+    color: var(--black);
+}
+
+body a:hover {
+    color: var(--black);
+}
+
+.mb-10 {
+    margin-bottom: var(--spacing);
+}
+
+.mt-10 {
+    margin-top: var(--spacing);
+}
+
+.mb-30 {
+    margin-bottom: var(--extreme-spacing);
+}
+
+.mt-30 {
+    margin-top: var(--extreme-spacing);
+}
+
+body .p-10 {
+    padding: var(--spacing);
+}
+
+.p-30 {
+    padding: var(--extreme-spacing);
+}
+
+.back {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.back button {
+    background-color: inherit;
+    color: var(--red);
+}
+
+.rel {
+    position: relative;
+}
+
+.ph-10 {
+    padding: 6px 12px !important;
+}
+
+.mh-10 {
+    margin: 6px 12px;
+}
+
+.mt-60 {
+    margin-top: 60px
+}
+
+.mb-60 {
+    margin-bottom: 60px
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+input::placeholder{
+    font-size: 16px;
+    color: var(--gray);
+}
+
+.search-btn{
+    width: 40px;
+    background: var(--gray);
+    padding: 5px;
+    border-radius: 5px;
+}

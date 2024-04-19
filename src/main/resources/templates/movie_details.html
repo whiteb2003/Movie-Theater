@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Cinema</title>
+
+    <!--    <link-->
+    <!--            th:href="@{https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap}"-->
+    <!--            rel="stylesheet">-->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/movie_details.css}">
+    <link rel="stylesheet" th:href="@{/css/specificMovie.css}">
+</head>
+<body>
+<!--<div th:replace="nav :: navFragment(userDetails=${userDetails})"></div>-->
+<div th:replace="nav.html"></div>
+<div th:style="'background:url(/images/' + ${movie.getBanner()} + ');' + 'background-size:cover'" class="ground-image">
+</div>
+<main class="main">
+    <div class="func-wrapper important">
+        <div class="rel mb-30">
+            <a th:href="@{/home}" class="back">
+                <button type="button">Back</button>
+            </a>
+        </div>
+        <div th:object="${movie}" class="all">
+            <div class="sheader">
+                <div class="poster"><img itemprop="image" th:src="@{${movie.getPosterImagePath()}}"></div>
+                <div class="data">
+                    <h1 th:text="${movie.movie_title_en}"></h1>
+                    <div class="extra"><span class="valor" th:text="${movie.movie_title_vn}"></span></div>
+                    <div class="extra">
+                        <span style="font-weight: 500">Movie date:</span>
+                        <span class="date" itemprop="dateCreated"
+                              th:text="${movie.release_date}">Oct. 06, 2023</span></div>
+                    <div class="extra">
+                        <span style="font-weight: 500">Movie duration:</span>
+                        <span class="date" itemprop="movieDuretion"
+                              th:text="${duration}">aaaaa</span>
+                    </div>
+                    <div class="extra movie_label">
+                        <span style="font-weight: 500">Production company:</span>
+                        <span class="item-label" th:text="${movie.getProduction_company()}">Full 6/6 Vietsub</span>
+                    </div>
+                    <div class="starstruck-ptype" style="">
+                        <div>
+                            <meta itemprop="name" content="Loki: Phần 2">
+                        </div>
+                    </div>
+                    <div class="sgeneros">
+                        <span style="font-weight: 500">Genre:</span>
+                        <th:block th:each="genre, iterStat : ${genres}">
+                            <span th:text="${genre}" rel="tag"></span>
+                            <span th:if="${!iterStat.last}">,</span>
+                            <span th:if="${iterStat.last}">.</span>
+                        </th:block>
+                    </div>
+
+                </div>
+            </div>
+            <a th:href="@{'/datechose/' + ${movie.movie_id}}" type="submit" class="book-btn p-10">Booking</a>
+            <!-- Tabs -->
+            <div class="single_tabs">
+                <ul id="section" class="smenu idTabs">
+                    <li class="selected"><a href="#info" onclick="showTab('info',0)">Description</a></li>
+                    <li><a href="#cast" onclick="showTab('cast',1)">Cast&Crew</a></li>
+                    <li><a href="#trailer" onclick="showTab('trailer',2)">Trailer</a></li>
+                </ul>
+            </div>
+            <!-- Info -->
+            <div id="info" class="sbox fixidtab" style="display: block;">
+                <h2>Description</h2>
+                <div itemprop="description" class="wp-content">
+                    <h3 th:text="${movie.movie_title_vn}"></h3>
+                    <input type="hidden" class="info-des" th:value="${movie.description}"/>
+                    <div class="des"></div>
+                </div>
+            </div>
+            <!-- Cast -->
+            <div id="cast" class="sbox fixidtab" style="display: none;">
+                <h2>Cast&Crew</h2>
+                <div>
+                    <span>Director: </span>
+                    <span th:text="${movie.directors}"></span>
+                </div>
+                <div>
+                    <span>Actors: </span>
+                    <span th:text="${movie.actors}"></span>
+                </div>
+            </div>
+            <!-- Trailer -->
+            <div id="trailer" class="sbox fixidtab" style="display: none;">
+                <h2>Trailer</h2>
+                <!-- Nội dung về trailer -->
+                <iframe width="560" height="315" th:src="@{'https://www.youtube.com/embed/' + ${trailer}}"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="footer.html"></div>
+<!-- JavaScript -->
+<script>
+    function showTab(tabId, index) {
+        // Ẩn tất cả các tab
+        var tabs = document.querySelectorAll('.sbox');
+        tabs.forEach(function (tab) {
+            tab.style.display = 'none';
+        });
+        let list = document.querySelector('.smenu').getElementsByTagName("li");
+
+        for (let i = 0; i < list.length; i++) {
+            list[i].classList.remove("selected");
+        }
+
+        list[index].classList.add("selected");
+
+        // Hiển thị tab được chọn
+        document.getElementById(tabId).style.display = 'block';
+    }
+
+    let info = document.querySelector('.info-des');
+    let des = document.querySelector('.des');
+
+    des.innerHTML = info.value;
+
+</script>
+</body>
+
+</html>

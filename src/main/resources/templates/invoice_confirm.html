@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Cinema</title>
+    <link rel="stylesheet" th:href="@{/css/movie.css}">
+</head>
+<body>
+<div th:replace="nav.html"></div>
+<div class="main">
+    <div class="blur"></div>
+    <div class="func-wrapper important">
+        <a ><button style="color: var(--red); background: transparent" onclick="window.location.href='/invoice/list'" type="button">Back</button></a>
+
+        <h2>Invoice Confirmation</h2>
+
+        <h3>Invoice Details</h3>
+        <p>Invoice Code: <span style="font-weight: 500"  th:text="${invoice.code}"></span></p>
+        <p>Movie Title: <span style="font-weight: 500"  th:text="${invoice.movie_title_en}"></span></p>
+        <p>Date: <span style="font-weight: 500"  th:text="${invoice.movie_date}"></span>  Time: <span style="font-weight: 500"   th:text="${invoice.schedule}"></span></p>
+        <p>Username: <span style="font-weight: 500"  th:text="${invoice.username}"></span></p>
+        <p>Invoice Price: <span style="font-weight: 500"  th:text="${invoice.price}"></span></p>
+        <p>Invoice Status: <span style="font-weight: 500"  th:text="${invoice.status}"></span></p>
+        <h2>Tickets</h2>
+        <form id="invoiceForm" method="post">
+            <input type="hidden" name="invoiceId" th:value="${invoice.id}">
+            <label for="promotionSelect">Select Promotion:</label>
+            <select class="mb-2" id="promotionSelect" name="promotionId">
+                <option value="-1" th:selected="${selectedPromotionId == -1}">No Promotion</option>
+                <option th:each="promotion : ${promotions}"
+                        th:value="${promotion.promotion_id}"
+                        th:selected="${promotion.promotion_id == selectedPromotionId}"
+                        th:text="${promotion.title}"></option>
+            </select>
+            <br>
+            <div class="btn-group gap-2 my-2">
+                <button type="button" class="btn btn-outline-primary" onclick="checkAll()">Check All</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="uncheckAll()">Uncheck All</button>
+            </div>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Ticket ID</th>
+                    <th>Seat Position</th>
+                    <th>Status</th>
+                    <!-- Add more columns for other ticket properties -->
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ticket : ${tickets}">
+                    <td>
+                        <input type="checkbox" name="ticketIds" th:value="${ticket.ticket_id}" th:checked="${ticket.status.equals(T(com.group5.cpl.model.enums.TicketStatus).PAID)}">
+                    </td>
+                    <td th:text="${ticket.ticket_id}"></td>
+                    <td th:text="${ticket.seat.position}"></td>
+                    <td th:text="${ticket.status}"></td>
+                    <!-- Display other ticket properties -->
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${error}" class="alert alert-danger" id="errorAlert" role="alert">
+                <strong>Error:</strong> <span th:text="${error}"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" id="checkoutButton" class="btn btn-outline-info btn-sm mb-3">Checkout</button>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label class="bold">Use Points:</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="usePoint" id="usePointsYes" value="true" th:checked="${invoice.usePoint}">
+                    <label class="form-check-label" for="usePointsYes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="usePoint" id="usePointsNo" value="false" th:checked="${!invoice.usePoint}">
+                    <label class="form-check-label" for="usePointsNo">
+                        No
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 confirm-form">
+                    <button id="confirmButton" type="button" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#checkoutButton').click(function () {
+            // Gather form data
+            var formData = $('#invoiceForm').serialize();
+            // Submit data to /invoice/checkout via AJAX
+            $.ajax({
+                type: "POST",
+                url: "/invoice/checkout",
+                data: formData,
+                success: function () {
+                    // Checkout successful, enable confirm button
+                    location.reload();
+                },
+                error: function () {
+                    // Handle error
+                    alert("Checkout failed");
+                }
+            });
+        });
+
+        $('#confirmButton').click(function () {
+            // Gather form data
+            var formData = $('#invoiceForm').serialize();
+            // Submit data to /invoice/confirm via AJAX
+            $.ajax({
+                type: "POST",
+                url: "/invoice/confirm",
+                data: formData,
+                success: function () {
+                    // Handle success
+                    alert("Invoice confirmed");
+                    // location.reload();
+                    window.location.href = "/invoice/list";
+                },
+                error: function () {
+                    // Handle error
+                    alert("Invoice confirmation failed");
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.getElementById('confirmButton').addEventListener('click', function() {
+        if (confirm("Are you sure you want to submit?")) {
+
+        } else {
+            // User clicked Cancel, do nothing
+        }
+    });
+</script>
+<script>
+    // Remove error alert after 3 seconds
+    setTimeout(function() {
+        var errorAlert = document.getElementById('errorAlert');
+        if (errorAlert) {
+            errorAlert.parentNode.removeChild(errorAlert);
+        }
+    }, 3000); // 3000 milliseconds = 3 seconds
+</script>
+<script>
+    function checkAll() {
+        var checkboxes = document.querySelectorAll('input[name="ticketIds"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = true;
+        });
+    }
+
+    function uncheckAll() {
+        var checkboxes = document.querySelectorAll('input[name="ticketIds"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+    }
+</script>
+
+</body>
+</html>

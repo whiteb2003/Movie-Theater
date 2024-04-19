@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Booking</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <main>
+        <div class="user-sidebar">
+            <!-- Your sidebar content here -->
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <ul>
+                    <li th:if="${isManager}"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')" class="checked"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+        <form th:action="@{'/tickets/list/search'}" method="post">
+            <div class="func-screen">
+                <div class="management-wrapper">
+                    <!-- Your ticket management content here -->
+                    <h2 class="func-name">
+                        Ticket Management
+                    </h2>
+                    <input type="hidden" name="oldPage" th:value="${currentPage}">
+                    <div class="room-manage">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="name-col">Movie</th>
+                                    <th>Date</th>
+                                    <th class="ro">Schedule</th>
+                                    <th class="co">Seat</th>
+                                    <th class="co">Account</th>
+                                    <th class="co">Status</th>
+                                    <th class="co">Price</th>
+                                    <th class="btn-wrapper">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ticket,ticketsIndex : ${tickets}">
+                                    <td th:text="${ticket.movie_name}">Movie</td>
+                                    <td th:text="${ticket.movie_date}">Date</td>
+                                    <td th:text="${ticket.movie_schedule}">Schedule</td>
+                                    <td th:text="${ticket.seat_position}">Seat</td>
+                                    <td th:text="${ticket.customer_name}">Account</td>
+                                    <td th:text="${ticket.seat_price}">Price</td>
+                                    <td th:text="${ticket.ticketStatus}">Status</td>
+                                    <td class="btns">
+                                        <a>Update Status</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="paging-wrapper">
+                        <!-- First page button -->
+                        <button name="currentPage" type="submit" th:if="${currentPage != null && currentPage > 1}"
+                            th:value="1" class="first-page">First</button>
+                        <span th:unless="${currentPage != null && currentPage > 1}">First</span>
+                        <!-- Previous page button -->
+                        <button name="currentPage" type="submit" th:if="${currentPage != null && currentPage > 1}"
+                            th:value="${currentPage - 1}" class="first-page">Previous</button>
+                        <span th:unless="${currentPage != null && currentPage > 1}">Previous</span>
+                        <!-- Page number buttons -->
+                        <ul class="page-list">
+                            <span th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,totalPage)}">
+                                <button name="currentPage" type="submit" th:if="${i!=currentPage}"
+                                    th:value="${i}">[[${i}]]</button>&nbsp;&nbsp;
+                                <span th:unless="${i!=currentPage}">[[${i}]]</span>
+                            </span>
+                        </ul>
+                        <!-- Next page button -->
+                        <button name="currentPage" type="submit"
+                            th:if="${currentPage != null && currentPage < totalPage}" th:value="${currentPage + 1}"
+                            class="last-page">Next</button>
+                        <span th:unless="${currentPage != null && currentPage < totalPage}">Next</span>
+                        <!-- Last page button -->
+                        <button name="currentPage" type="submit"
+                            th:if="${currentPage != null && currentPage < totalPage}" th:value="${totalPage}"
+                            class="last-page">Last</button>
+                        <span th:unless="${currentPage != null && currentPage < totalPage}">Last</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+    <div th:replace="footer.html"></div>
+</body>
+
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Cinema</title>
+    <link rel="stylesheet" th:href="@{/css/movie.css}">
+    <script th:src="@{/js/loadUploadImage.js}"></script>
+    <script src="../../ckeditor/ckeditor.js"></script>
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+    <div class="main">
+
+        <form id="editPromo" class="func-wrapper important" th:action="@{/promo/update/__${id}__}"
+            th:object="${promotion}" method="post" enctype="multipart/form-data" onsubmit=" return checkValidate();">
+            <input type="hidden" name="promotionId" th:value="${promotion.promotion_id}" />
+            <div class="func-title mb-30 rel">
+                <h2>Edit Promo</h2>
+                <a th:href="'/promo/manage'" class="back">
+                    <button type="button">Back</button>
+                </a>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Title</span>
+                        <input type="text" th:field="*{title}" id="title_en" th:value="${promotion.title}"
+                            placeholder="Enter title">
+                        <span style="color: #ff0000;" id="title_error"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Detail</span>
+                        <input id="detail">
+                        <input type="hidden" th:field="*{detail}" id="detail_hidden">
+                        <span style="color: var(--red);" id="detail_error"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="date-wrapper">
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">Start Date</span>
+                            <input type="date" th:field="*{startDate}" id="start_date"
+                                th:value="${#dates.format(promotion.startDate, 'yyyy-MM-dd')}"
+                                placeholder="Enter Start Date">
+                            <p id="start_date_error"></p>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">End Date</span>
+                            <input type="date" th:field="*{endDate}" id="end_date"
+                                th:value="${#dates.format(promotion.endDate, 'yyyy-MM-dd')}"
+                                placeholder="Enter End Date">
+                            <p id="end_date_error"></p>
+                        </label>
+                    </div>
+                </div>
+                <span style="color: var(--red);" class="date-error"></span>
+            </div>
+            <div class="discount-wrapper">
+                <div class="input-wrapper">
+                    <span class="field">Discount (%)</span>
+                    <div class="coating">
+                        <!--                    <label>-->
+                        <!--                        <span>Amount</span>-->
+                        <!--                        <input type="text" th:field="*{discountValue}" name="discount" placeholder="Enter discount" id="discount_value">-->
+                        <!--                    </label>-->
+                        <label>
+                            <!-- <span>Percentage (%)</span> -->
+                            <input type="text" th:field="*{discountPercentage}" name="discount"
+                                placeholder="Enter discount" id="discount_percentage">
+                        </label>
+                    </div>
+                </div>
+                <div class="input-half-wrapper status-avai">
+                    <span class="field">Status</span>
+                    <div>
+                        <select th:field="*{status}" id="status" name="status">
+                            <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"
+                                placeholder="Choose Status"></option>
+                        </select>
+                        <span style="color: var(--red);" id="status_error"></span>
+                    </div>
+                </div>
+                <span style="color: var(--red);" class="discount-error"></span>
+            </div>
+
+            <div class=" file-thing promo mt-30">
+                <div class="input-half-wrapper">
+                    <div>
+                        <label>
+                            <span class="field" style="color: var(--dark-blue)">Import Image</span>
+                            <input type="file" accept=".png, .jpg, .jpeg" name="image" id="image"
+                                onchange="loadFile(event, 'output-b')" hidden>
+                            <!--                        <span class="import p-10">Import</span>-->
+                            <img id="output-b" th:src="@{'/images/' + ${promotion.image}}" style="max-width: 200px;"
+                                th:if="${promotion.image}" />
+                            <p id="image_error"></p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="submit">
+                <input type="submit" value="Submit"> <!-- Changed type to submit -->
+            </div>
+        </form>
+    </div>
+    <div th:replace="footer.html"></div>
+
+
+    <script>
+        // document.getElementById("discount_value").addEventListener("focus", function() {
+        //     if (this.value === "0") {
+        //         this.value = "";
+        //     }
+        // });
+
+        document.getElementById("discount_percentage").addEventListener("focus", function () {
+            if (this.value === "0") {
+                this.value = "";
+            }
+        });
+
+        let editor = CKEDITOR.replace('detail');
+        let detailInput = document.getElementById("detail_hidden");
+        let dateError = document.querySelector(".date-error");
+        let disError = document.querySelector(".discount-error");
+
+        editor.setData(detailInput.value);
+
+        editor.on('key', (e) => {
+            setTimeout(
+                () => {
+                    detailInput.value = (editor.getData());
+                }, 10);
+        });
+
+        function checkValidate(e) {
+            let start = document.getElementById("start_date");
+            let end = document.getElementById("end_date");
+            let discounts = document.querySelector('.discount-wrapper').getElementsByTagName("input");
+            let status = true;
+            let detail = document.getElementById("detail_hidden");
+            let detailError = document.getElementById("detail_error");
+            let title = document.getElementById("title_en");
+            let titleError = document.getElementById("title_error");
+
+            // Reset error messages
+            dateError.innerHTML = "";
+            disError.innerHTML = "";
+            detailError.innerHTML = "";
+            titleError.innerHTML = "";
+
+            for (let i = 0; i < discounts.length; i++) {
+                let discountValue = parseInt(discounts[i].value);
+                if (isNaN(discountValue) || discountValue < 0) {
+                    disError.innerHTML = "Discount must be greater or equal 0!";
+                    status = false;
+                    break; // Exit loop if any invalid discount found
+                }
+            }
+
+
+            if (start.value >= end.value) {
+                dateError.innerHTML = "";
+                dateError.innerHTML = "End date must not be less than start date!"
+                status = false;
+            }
+
+            if (detail.value === "" || detail.value === null) {
+                detailError.innerHTML = "";
+                detailError.innerHTML = "Detail must not be empty!";
+                status = false;
+            }
+
+            if (title.value === "" || title.value === null) {
+                titleError.innerHTML = "";
+                titleError.innerHTML = "Title must not be empty!";
+                status = false;
+            }
+            return status;
+        }
+    </script>
+
+</body>
+
+</html>

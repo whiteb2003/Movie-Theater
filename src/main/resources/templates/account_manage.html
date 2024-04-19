@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/alert.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="danger">
+        <i class="fas fa-times-circle shine"></i>
+        <span id="message"></span>
+    </div>
+    <main>
+        <div class="blur"></div>
+
+        <div class="user-sidebar">
+            <div class="navigation">
+
+            </div>
+            <div class="navigate-list rel">
+                <p th:if="${isManager}">Admin Management</p>
+                <p th:if="${!isManager}">Dashboard</p>
+                <span><img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="bar"></span>
+                <ul class="segments">
+                    <li th:if="${isManager}" class="checked"><a th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/employee/manage}">Employee</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/ticket/manage}">Booking History</a></li>
+                    <li><a th:href="@{/invoice/list}">Invoice</a></li>
+                    <li sec:authorize="hasAnyAuthority('MANAGER') or hasAnyAuthority('EMPLOYEE')"><a
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/cinemarooms}">Room</a></li>
+                    <li th:if="${isManager}"><a th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="func-screen rel">
+            <div class="dropdown">
+                <img th:src="@{/icons/bars-solid.svg}" style="width: 30px" class="small-bar dropdown-toggle"
+                    id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/account/manage}">Account</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employee/manage}">Employee</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/ticket/manage}">Booking History</a>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/invoice/list}">Invoice</a></li>
+                    <li th:if="${isManager}" class="checked"><a class="dropdown-item"
+                            th:href="@{/movies/manage}">Movie</a></li>
+                    <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/cinemarooms}">Room</a></li>
+                    <li><a class="dropdown-item" th:href="@{/promo/manage}">Promotion</a></li>
+                </ul>
+            </div>
+            <div class="management-wrapper rel important">
+                <h2 class="func-name">
+                    Account Management
+                </h2>
+
+                <div class="all-partial mb-30">
+                    <a th:href="@{/account/manage}" th:class="${key == 'all' ? 'current' : ''}">All</a>
+                    <a th:href="@{/account/manage/active}" th:class="${key == 'active' ? 'current' : ''}">Active</a>
+                    <a th:href="@{/account/manage/ban}" th:class="${key == 'ban' ? 'current' : ''}">Banned</a>
+                </div>
+
+                <div class="filter mb-30">
+                    <form th:action="@{/account/manage/{key}/page/1(key=${key})}" class="filter-search">
+                        <input type="text" name="username" th:value="${username}" class="form-control rounded"
+                            placeholder="Search username" aria-label="Search" aria-describedby="search-addon" />
+                        <input type="text" name="email" th:value="${email}" class="form-control rounded"
+                            placeholder="Search email" aria-label="Search" aria-describedby="search-addon" />
+                        <input type="text" name="phone" th:value="${phone}" class="form-control rounded"
+                            placeholder="Search phone" aria-label="Search" aria-describedby="search-addon" />
+                        <span class="input-group-text border-0" id="search-addon">
+                            <button type="submit" class="search-btn"><img
+                                    th:src="@{/icons/magnifying-glass-solid.svg}"></button></span>
+                    </form>
+                </div>
+
+                <div class="room-manage">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="name-col">Username</th>
+                                <th>Full Name</th>
+                                <th class="ro">Email</th>
+                                <th class="co">Phone Number</th>
+                                <th class="co">Score</th>
+                                <th class="btn-wrapper">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${list}">
+                                <td th:text="${item.username}"></td>
+                                <td th:text="${item.fullname}"></td>
+                                <td th:text="${item.email}"></td>
+                                <td th:text="${item.phoneNumber}"></td>
+                                <td th:text="${item.score}"></td>
+                                <td class="btns">
+                                    <th:block th:if="${item.status == true}">
+                                        <a th:href="@{'/account/manage/' + ${key} + '/' + ${item.account_id}}" onclick="return confirm('Are you sure you want to ban this account?');">
+                                            <p th:text="@{ban}"></p>
+                                        </a>
+                                    </th:block>
+                                    <th:block th:if="${item.status == false}">
+                                        <a th:href="@{'/account/manage/' + ${key} + '/' + ${item.account_id}}" onclick="return confirm('Are you sure you want to unban this account?');">
+                                            <p th:text="@{activate}"></p>
+                                        </a>
+                                    </th:block>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav aria-label="Page navigation example" class="paging-wrapper">
+                    <ul th:if="${totalPage>1}" class="pagination justify-content-center flex-wrap">
+                        <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                            <a class="page-link"
+                                th:href="@{'/account/manage/' + ${key} + '/page/1'+ ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}}">First</a>
+                        </li>
+                        <li th:class="${currentPage > 1 ?'page-item' : 'page-item disabled'}">
+                            <a class="page-link"
+                                th:href="@{'/account/manage/' + ${key} + '/page/' + ${currentPage - 1}+ ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}}">Previous</a>
+                        </li>
+                        <th:block th:if="${totalPage <= 4}">
+                            <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,totalPage)}"
+                                th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                <a class="page-link"
+                                    th:href="@{'/account/manage/' + ${key} + '/page/'+${i}} + ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+                        <th:block th:if="${totalPage > 4}">
+                            <th:block th:if="${currentPage <= 2 || currentPage > totalPage - 2}">
+                                <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(1,2)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/account/manage/' + ${key} + '/page/'+${i}} + ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}">[[${i}]]</a>>[[${i}]]</a>
+                                </li>
+
+                                <a class="page-link"
+                                    th:href="@{'/account/manage/' + ${key} + '/page/'+3} + ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}">...</a>
+
+                                <li th:if="${totalPage!=0}" th:each="i:${#numbers.sequence(totalPage-1,totalPage)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/account/manage/' + ${key} + '/page/'+${i}} + ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${currentPage > 2 && currentPage < totalPage - 1}">
+                                <a class="page-link"
+                                    th:href="@{'/account/manage/' + ${key} + '/page/' + ${currentPage - 1}+ ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}}">...</a>
+
+                                <li th:if="${totalPage!=0}"
+                                    th:each="i:${#numbers.sequence(currentPage-1,currentPage+1)}"
+                                    th:class="${currentPage!=i ? 'page-item' : 'page-item disabled'}">
+                                    <a class="page-link"
+                                        th:href="@{'/account/manage/' + ${key} + '/page/'+${i}} + ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}">[[${i}]]</a>
+                                </li>
+
+                                <a class="page-link"
+                                    th:href="@{'/account/manage/' + ${key} + '/page/' + ${currentPage + 1}+ ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}}">...</a>
+                            </th:block>
+                        </th:block>
+
+
+                        <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                            <a class="page-link"
+                                th:href="@{'/account/manage/' +${key}+'/page/' + ${currentPage + 1}+ ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}}">Next</a>
+                        </li>
+                        <li th:class="${currentPage < totalPage ? 'page-item' : 'page-item disabled' }">
+                            <a class="page-link"
+                                th:href="@{'/account/manage/' +${key}+'/page/' + ${totalPage}+ ${username!=null?'?username='+username:''} + ${email!=null?'&email='+email:''} + ${phone!=null?'&phone='+phone:''}}">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+                <input type="hidden" id="s" th:value="${error}" />
+            </div>
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+    <script>
+        function showCheck(message) {
+            var danger = document.querySelector(".danger");
+            var messageElement = document.getElementById("message");
+            messageElement.textContent = message;
+            danger.style.display = "flex";
+
+            setTimeout(function () {
+                danger.style.display = "none";
+            }, 2500);
+        }
+
+        var successValue = document.getElementById("s").value;
+        if (successValue === "You can not edit!") {
+            showCheck(successValue);
+        }
+    </script>
+</body>
+
+</html>

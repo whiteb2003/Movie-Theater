@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule</title>
+    <link rel="stylesheet" th:href="@{/css/schedule.css}">
+    <link rel="stylesheet" th:href="@{/css/alert.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div th:style="'background:url(/images/' + ${movie.getBanner()} + ');' + 'background-size:cover'"
+        class="ground-image">
+    </div>
+    <div class="check">
+        <i class="fas fa-check-circle color"></i> &nbsp; &nbsp;
+        <span id="message"></span>
+    </div>
+    <main class="main">
+        <div class="func-wrapper important p-30" th:object="${movie}">
+            <div class="func-title rel mb-30">
+                <h2>Schedule</h2>
+                <a th:href="@{/movies/manage}" class="back">
+                    <button type="button">Back</button>
+                </a>
+            </div>
+            <div class="func">
+                <div class="movie-info-session">
+                    <div class="image-holder">
+                        <img th:src="@{${movie.PosterImagePath}}">
+                    </div>
+
+                </div>
+                <div class="schedule-wrapper">
+                    <div class="movie-info">
+                        <span class="title">Title: <b th:text="${movie.movie_title_en}">Borderlands</b></span>
+                        <span><span class="dura" th:text="'Duration: ' + ${movie.duration}">Duration: 123</span><span>
+                                Mins</span></span>
+                        <span>Release Date: </span><span class="release" th:text=" ${#dates.format(movie.release_date, 'dd/MM/yyyy')}">Release
+                            Date: 0/0/0000</span>
+                    </div>
+                    <form id="saveSchedule" th:action="@{/movies/save_schedule}" method="post">
+                        <input type="hidden" name="movieId" th:value="${movieId}" />
+                        <input type="hidden" th:field="*{movie_id}" />
+                        <div class="room mb-30">
+                            <div class="mb-10" style="font-weight: 500; font-size: 18px">Choose room</div>
+                            <div
+                                style="display: flex; gap: var(--extreme-spacing);align-items: center; flex-wrap: wrap">
+                                <div th:each="room : ${rooms}">
+                                    <label>
+                                        <input type="checkbox" name="room_name" th:value="${room.room_name}"
+                                            th:checked="${mrd != null and mrd.![room.room_name].contains(room.room_name)}"
+                                            onclick="disableRoom(this)"
+                                            th:attr="readonly=${roomHasMovie.contains(room)} ? 'readonly' : null" />
+                                        <span th:text="${room.room_name}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <p id="room_error"></p>
+                        </div>
+                        <div class="date mb-30">
+                            <div class="mb-10" style="font-weight: 500; font-size: 18px">Chosen Upcoming Date</div>
+                            <div class="chosen-date mb-30">
+                                <label th:each="mrdValue : ${date}">
+                                    <input type="checkbox" th:value="${mrdValue}"
+                                        th:id="${#dates.format(mrdValue, 'd/M')}" name="movieDate"
+                                        onclick="disableCheckbox(this)"
+                                        th:attr="readonly=${#dates.format(mrdValue, 'yyyy-MM-dd') lt #dates.format(#dates.createNow(), 'yyyy-MM-dd') or dateExist.contains(mrdValue)} ? 'readonly' : null"
+                                        checked />
+                                    <span th:text="${#dates.format(mrdValue, 'd/M')}"></span>
+                                </label>
+                            </div>
+                            <div class="mb-10" style="font-weight: 500; font-size: 18px">Choose Date</div>
+                            <div class="spawn-date">
+
+                            </div>
+                            <p style="color: red;" th:text="${dateError}" id="dateError"></p>
+                            <p style="color: red;" th:text="${booked}" id="dateError"></p>
+                        </div>
+
+                        <div class="schedule mb-30">
+                            <div class="mb-10" style="font-weight: 500; font-size: 18px">Choose Schedule</div>
+                            <div class="chosen-schedule mb-10">
+                                <label th:each="schedule : ${schedules}">
+                                    <input type="checkbox" name="schedule" th:value="${schedule.value}"
+                                        th:checked="${selectedSchedules != null and selectedSchedules.![schedule.schedule_id].contains(schedule.schedule_id)}"
+                                        onclick="disableSchedule(this)"
+                                        th:attr="readonly=${scheduleExist.contains(schedule)} ? 'readonly' : null" />
+                                    <span
+                                        th:text="${(schedule.value div 60)} + ':' + (${(schedule.value mod 60)} == 0 ? '00' : (${(schedule.value mod 60)}))"></span>
+                                </label>
+                            </div>
+                            <p style="color: red;" id="schedule_error"></p>
+                        </div>
+                        <div class="submit">
+                            <input type="button" onclick="checkValid()" value="Save" class="p-10">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <input type="hidden" id="s" th:value="${success}" />
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+    <script th:src="@{/js/schedule.js}"></script>
+    <script>
+        function showCheck(message) {
+            var check = document.querySelector(".check");
+            var messageElement = document.getElementById("message");
+            messageElement.textContent = message;
+            check.style.display = "flex";
+
+            setTimeout(function () {
+                check.style.display = "none";
+            }, 2500);
+        }
+
+        var successValue = document.getElementById("s").value;
+        if (successValue === "Save successfully!!!") {
+            showCheck(successValue);
+        }
+
+        function disableCheckbox(checkbox) {
+            if (checkbox.checked || checkbox.readOnly) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+            if (checkbox.readOnly) {
+                alert("You can not delete this date");
+            }
+        }
+
+        function disableRoom(checkbox) {
+            if (checkbox.checked || checkbox.readOnly) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+
+            if (checkbox.readOnly) {
+                alert("You can not delete this room");
+            }
+        }
+
+        function disableSchedule(checkbox) {
+            if (checkbox.checked || checkbox.readOnly) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+
+            if (checkbox.readOnly) {
+                alert("You can not delete this schedule");
+            }
+        }
+    </script>
+</body>
+
+</html>

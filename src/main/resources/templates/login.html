@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/color.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" th:href="@{/css/homepage.css}">
+</head>
+
+<body>
+    <a th:href="@{/home}" class=" home"><img th:src="@{/icons/house-solid.svg}"> </a>
+    <section class="form-container">
+        <div class="form-container-background"></div>
+        <form th:action="@{/login}" method="post">
+            <div style="font-size: 25px;
+  font-weight: 500;text-align: center">Login</div>
+            <div class="w-100" style="text-align: center" th:if="${param.error}">
+                <span class="error-text"
+                    th:if="${session.SPRING_SECURITY_LAST_EXCEPTION != null && session.SPRING_SECURITY_LAST_EXCEPTION.message.contains('Bad credentials')}">
+                    Invalid username or password
+                </span>
+                <span class="error-text"
+                    th:unless="${session.SPRING_SECURITY_LAST_EXCEPTION != null && session.SPRING_SECURITY_LAST_EXCEPTION.message.contains('Bad credentials')}">
+                    [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+                </span>
+            </div>
+            <p class="bold">Username <span>*</span></p>
+            <input type="text" name="username" placeholder="Enter your username" class="box">
+            <p class="bold">Password <span>*</span></p>
+            <input type="password" name="password" placeholder="Enter your password" class="box">
+            <a th:href="@{/forgot_password}">
+                <p style="text-align: right; font-size: 1.7rem" class="forgor">Forgot
+                    password</p>
+            </a>
+            <input type="submit" value="login" name="submit" class="btn">
+            <p style="text-align: center;">Don't have an account? <a th:href="@{/register}" class="signup"><b> Sign
+                        Up</b></a></p>
+        </form>
+    </section>
+    <div class="blur">
+    </div>
+</body>
+
+</html>

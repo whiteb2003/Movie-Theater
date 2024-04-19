@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Book Ticket</title>
+    <link rel="stylesheet" th:href="@{/css/book.css}">
+    <link rel="stylesheet" th:href="@{/css/alert.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+    <div class="check">
+        <i class="fas fa-check-circle color"></i> &nbsp; &nbsp;
+        <span id="message"></span>
+    </div>
+    <main class="main">
+        <div class="func-wrapper important mt-60 p-30">
+            <div class="func-title mb-30 rel">
+                <h2>Book Ticket</h2>
+                <a th:href="@{/home}" class="back" style="left:0">
+                    <button type="button">Back</button>
+                </a>
+            </div>
+            <div class="rel toggle-wrapper">
+                <div class="date-wrapper mb-30">
+                    <div class="spawn-date">
+
+                    </div>
+                </div>
+                <div class="abs">
+                    <div class="toggle">
+                        <img th:src="@{/icons/angle-right-solid.svg}">
+                    </div>
+                </div>
+            </div>
+            <div class="func">
+                <div class="mrd">
+                    <span th:text="${mess}"></span>
+                    <div th:each="mrdValue,status : ${mrd}" class="mb-30">
+                        <div class="film-title p-10 mb-30"
+                            th:if="${status.index == 0 || mrdValue.movie.movie_title_en != mrd[status.index - 1].movie.movie_title_en}"
+                            th:text="${mrdValue.movie.movie_title_en}"></div>
+                        <label class="grid">
+                            <span th:each="time : ${mrdValue.schedules}" class="single-mrd">
+                                <span class="smoll cinema" th:text="${mrdValue.room.room_name}"></span>
+                                <a class="schedule ph-10"
+                                    th:href="@{/seatchose/{movieId}/{timeId}(movieId=${mrdValue.movie.movie_id}, mrdId=${mrdValue.mrd_id}, timeId=${time.movie_schedule_id})}"
+                                    th:text="${(time.schedule.value div 60)} + ':' + (${(time.schedule.value mod 60)} == 0 ? '00' : (${(time.schedule.value mod 60)}))">Choose
+                                    Date</a>
+                                <span class="smoll seat"
+                                    th:text="${ticketCounts[time.movie_schedule_id]} + ' / ' +${mrdValue.room.seat_quantity}"></span>
+                            </span>
+                        </label>
+                        <br />
+                    </div>
+                </div>
+                <div class="schedule-wrapper sec">
+                    <div class="wrap">
+                        <div class="mb-10 choose-movie">Choose Movie</div>
+                        <div class="film-wrapper">
+                            <div class="film" th:each="movie : ${movies}" th:id="'film-'+${movie.movie_id}">
+                                <div class="circle">
+                                    <img th:src="@{/icons/circle-dot-solid.svg}">
+                                </div>
+                                <a th:href="@{'/bookingTicket/' + ${date} + '/' + ${movie.movie_id != null ? movie.movie_id : id}}"
+                                    th:text="${movie.movie_title_en}"></a> &nbsp;&nbsp;
+                            </div>
+                        </div>
+                        <!--                    <span th:text="${mess}"></span>-->
+                        <!--                    <label th:each="mrdValue,status : ${mrd}">-->
+                        <!--                        <span-->
+                        <!--                            th:if="${status.index == 0 || mrdValue.movie.movie_title_en != mrd[status.index - 1].movie.movie_title_en}"-->
+                        <!--                            th:text="${mrdValue.movie.movie_title_en}"></span>-->
+                        <!--                        <label th:each="time : ${mrdValue.schedules}">-->
+                        <!--                            <a class="schedule p-10"-->
+                        <!--                                th:href="@{/seatchose/{movieId}/{timeId}(movieId=${mrdValue.movie.movie_id}, timeId=${time.movie_schedule_id})}">-->
+                        <!--                                Choose-->
+                        <!--                                <span th:text="${mrdValue.room.room_name}">room</span>-->
+                        <!--                                <span-->
+                        <!--                                    th:text="${(time.schedule.value div 60)} + ':' + (${(time.schedule.value mod 60)} == 0 ? '00' : (${(time.schedule.value mod 60)}))">time</span>-->
+                        <!--                            </a>-->
+                        <!--                        </label>-->
+                        <!--                        <br />-->
+                        <!--                    </label>-->
+                    </div>
+
+                    <!--                <div class="schedule-wrapper">-->
+                    <!--                    <div class="date mb-30">-->
+                    <!--                        <div class="mb-10">Choose Movie</div>-->
+                    <!--                    </div>-->
+                    <!--                    <label class="film" th:each="movie : ${movies}">-->
+                    <!--                        <a th:href="@{'/bookingTicket/' + ${date} + '/' + ${movie.movie_id != null ? movie.movie_id : id}}"-->
+                    <!--                            th:text="${movie.movie_title_en}" th:id="${movie.movie_id}"></a> &nbsp;&nbsp;-->
+                    <!--                    </label>-->
+                    <!--                </div>-->
+                </div>
+            </div>
+            <input type="hidden" id="s" th:value="${success}" />
+        </div>
+    </main>
+    <div th:replace="footer.html"></div>
+    <script th:src="@{/js/bookingDate.js}"></script>
+</body>
+
+</html>

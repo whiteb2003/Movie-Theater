@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Score</title>
+    <link rel="stylesheet" th:href="@{/css/manageScreen.css}">
+    <link rel="stylesheet" th:href="@{/css/qrImage.css}">
+    <script th:src="@{/js/Point.js}"></script>
+</head>
+<body>
+<div th:replace="nav.html"></div>
+<div class="blur"></div>
+<main>
+    <div class="func-screen" style="margin-left: 0" >
+        <div class="management-wrapper important">
+            <h2 class="func-name rel">
+                My Score
+                <a th:href="@{'/user-info/' + ${#authentication.principal.id}}" class="back">
+                    <button type="button">Back</button>
+                </a>
+            </h2>
+            <div class="total-score">
+                Total Score: <span th:text="${totalScore}"></span>
+            </div>
+            <div class="all-partial mb-30">
+                <!-- Add links for different sections if needed -->
+            </div>
+            <form th:action="@{'/score_search/' + ${id}}">
+                <div class="filter mb-30">
+                    <div class="filter-search">
+                        <input type="text" name="code" th:value="${code}" class="form-control rounded"
+                               placeholder="Search code" aria-label="Search"
+                               aria-describedby="search-addon"/>
+                        <input type="text" name="price" th:value="${price}" class="form-control rounded"
+                               placeholder="Search value" aria-label="Search"
+                               aria-describedby="search-addon" oninput="this.value = this.value.replace(/[^\d]/g, '');">
+                        <span class="input-group-text border-0" id="search-addon">
+                                                          <button type="submit" class="search-btn"><img
+                                                                  th:src="@{/icons/magnifying-glass-solid.svg}"></button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <div class="room-manage">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="ro">Invoice Code</th>
+                        <th class="ro">Invoice Price</th>
+                        <th class="ro">Account</th>
+                        <th class="co">Points Extracted</th>
+                        <th class="co">QR Code</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Sử dụng Thymeleaf để lặp qua danh sách invoices -->
+                    <tr th:each="invoice : ${invoiceScoreDTOS}">
+                        <!-- Hiển thị thông tin của mỗi invoice -->
+                        <td th:text="${invoice.code}">Invoice Code</td>
+                        <td th:text="${invoice.price}">Invoice Price</td>
+                        <td th:text="${invoice.name}">Account</td>
+                        <td th:if="${invoice.status != 'UNPAID'}">
+                            <span th:text="${invoice.points == 0 ? 'Used Promotion' : (invoice.userPoint == true ? '-' : '+') + invoice.points}">Points Extracted</span>
+                        </td>
+                        <td th:unless="${invoice.status != 'UNPAID'}">
+
+                        </td>
+                        <td>
+                            <u>
+                            <a th:if="${invoice.qr != null}" href="#" th:attr="data-qr=${invoice.qr}" onclick="openModal(this.getAttribute('data-qr'))" style="color: #0077cc;">QR Code</a>
+                            </u>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="myModal" class="modal">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <img class="modal-content" id="img01">
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="footer.html"></div>
+</body>
+</html>

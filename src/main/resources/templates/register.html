@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+    <link rel="stylesheet" th:href="@{/css/color.css}">
+    <link rel="stylesheet" th:href="@{/css/homepage.css}">
+
+</head>
+
+<body>
+    <a th:href="@{/home}" class="home"><img th:src="@{/icons/house-solid.svg}"> </a>
+    <div class="blur"></div>
+    <div class="container p-30">
+        <div class="title">Registration</div>
+        <div class="content">
+            <form th:action="@{/process_register}" th:object="${user}" method="post">
+                <div class="user-details">
+                    <div class="input-box">
+                        <span class="details">Full Name <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="text" placeholder="Enter your name" th:field="*{fullname}">
+                            <span class="error-text-register mb-10" th:if="${#fields.hasErrors('fullname')}"
+                                th:errors="*{fullname}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Username <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="text" placeholder="Enter your username" th:field="*{username}">
+                            <span class="error-text-register mb-10" th:if="${#fields.hasErrors('username')}"
+                                th:errors="*{username}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Email <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="text" placeholder="Enter your email" th:field="*{email}">
+                            <span class="error-text-register mb-10" th:if="${#fields.hasErrors('email')}"
+                                th:errors="*{email}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Phone Number <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="text" placeholder="Enter your phone number" th:field="*{phoneNumber}">
+                            <span class="error-text-register mb-10" th:if="${#fields.hasErrors('phoneNumber')}"
+                                th:errors="*{phoneNumber}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Address <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="text" placeholder="Enter your address" th:field="*{address}">
+                            <span class="error-text-register mb-10" th:if="${#fields.hasErrors('address')}"
+                                th:errors="*{address}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Birthday <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="date" placeholder="Enter your Birthday(yyyy-MM-dd)" th:field="*{dob}">
+                            <span class="error-text-register mb-10" th:text="${error}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Password <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="password" placeholder="Enter your password" name="password"
+                                th:value="${password}">
+                            <span class="error-text-register mb-10" th:text="${errorPassword}"></span>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Confirm Password <span style="color: red;">*</span></span>
+                        <div class="input-container">
+                            <input type="password" placeholder="Confirm your password" name="confirmPassword"
+                                th:value="${confirmPassword}">
+                            <span class="error-text-register mb-10" th:text="${errorConfirmPassword}"></span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="gender-details">
+                    <input type="radio" id="dot-1" th:field="*{gender}" value="Male">
+                    <input type="radio" id="dot-2" th:field="*{gender}" value="Female">
+                    <span class="gender-title">Gender<span style="color: red;">*</span><span
+                            class="error-text-register  mb-10" th:if="${#fields.hasErrors('gender')}"
+                            th:errors="*{gender}"></span></span>
+                    <div class="category">
+                        <label for="dot-1">
+                            <span class="dot one"></span>
+                            <span class="gender">Male</span>
+                        </label>
+                        <label for="dot-2">
+                            <span class="dot two"></span>
+                            <span class="gender">Female</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button">
+                    <input type="submit" value="Register">
+                </div>
+            </form>
+        </div>
+        <p class="mt-10" style="text-align: center">Have account? <a th:href="@{/login}" class="rollback">Login</a></p>
+    </div>
+    <input type="hidden" id="alo" th:value="${valueSendEmail}" />
+    <script>
+        var sendValue = document.getElementById("alo").value;
+        console.log(sendValue);
+
+        function successSend() {
+            Swal.fire({
+                title: 'Congratulations!',
+                html: 'Please check your email to verify password',
+                icon: 'success',
+                width: 600,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then((result) => {
+                window.location = "http://localhost:8080/login"
+            });
+        }
+
+        if (sendValue === "true") {
+            window.onload = function () {
+                successSend();
+            }
+        }
+    </script>
+</body>
+
+</html>

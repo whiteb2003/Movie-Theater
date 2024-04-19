@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Cinema</title>
+    <link rel="stylesheet" th:href="@{/css/movie.css}">
+    <script th:src="@{/js/loadUploadImage.js}"></script>
+    <script src="../../ckeditor/ckeditor.js"></script>
+</head>
+
+<body>
+    <div th:replace="nav.html"></div>
+    <div class="blur"></div>
+    <div class="main">
+
+        <form id="saveMovie" th:action="@{/movies/save_movie}" class="func-wrapper important" method="post"
+            th:object="${movie}" enctype="multipart/form-data">
+            <input type="hidden" name="movieId" th:value="${movieId}" />
+            <input type="hidden" th:field="*{movie_id}" />
+            <div class="func-title mb-30 rel">
+                <h2 th:text="${movieId==null?'Add Movie' : 'Edit Movie'}"></h2>
+                <a th:href="@{/movies/manage}" class="back">
+                    <button type="button">Back</button>
+                </a>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Title EN</span>
+                        <input type="text" id="title_en" placeholder="Movie title english" th:field="*{movie_title_en}">
+                        <p style="color: #ff0000;" th:text="${errorENG}" id="title_en_error"></p>
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Title VN</span>
+                        <input type="text" id="title_vn" placeholder="Movie title vietnam" th:field="*{movie_title_vn}">
+                        <p style="color: red;" th:text="${errorVIE}" id="title_vn_error"></p>
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Description</span>
+                        <input type="text" id="description" placeholder="Description" class="p-10 ckeditor" />
+                        <!--                    </input>-->
+                        <p id="description_error"></p>
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Short Description</span>
+                        <input type="text" id="short_description" placeholder="Short Description"
+                            class="p-10 ckeditor" />
+                        <!--                    </input>-->
+                        <p id="short_description_error"></p>
+                    </label>
+                </div>
+            </div>
+            <div class="half">
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">Duration (Mins)</span>
+                            <input type="number" id="duration" placeholder="Duration" th:field="*{duration}" min="1">
+                            <p id="duration_error"></p>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">Release Date</span>
+                            <input type="date" id="release_date" placeholder="Release Date" th:field="*{release_date}">
+                            <p id="release_date_error"></p>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div>
+                        <label>
+                            <span class="field">Production Company</span>
+                            <input type="text" id="company" placeholder="Company" th:field="*{production_company}">
+                            <p id="company_error"></p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Actors</span>
+                        <input type="text" id="actor" placeholder="Actors" th:field="*{actors}">
+                        <p id="actor_error"></p>
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Directors</span>
+                        <input type="text" id="director" placeholder="Directors" th:field="*{directors}">
+                        <p id="director_error"></p>
+                    </label>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <div>
+                    <label>
+                        <span class="field">Trailer URL</span>
+                        <input type="text" id="trailer" placeholder="Trailer URL" th:field="*{trailer}"
+                            oninput="changeURL()">
+                        <p id="trailer_error"></p>
+                    </label>
+                </div>
+                <iframe class="video" width="560" height="315" src="" allowfullscreen></iframe>
+            </div>
+            <div class=" file-thing">
+                <div class="input-half-wrapper">
+                    <div>
+                        <label>
+                            <span class="field" style="color: var(--dark-blue)">Import Poster</span>
+                            <input type="file" accept=".png, .jpg, .jpeg" name="imagePoster" id="imagePoster"
+                                onchange="loadFile(event, 'output')" hidden>
+                            <!--                        <span class="import p-10">Import</span>-->
+                            <img id="output" class="shadow" style="display: none">
+                            <p id="poster_error"></p>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-half-wrapper">
+                    <div>
+                        <label class="banner">
+                            <span class="field" style="color: var(--dark-blue)">Import Banner</span>
+                            <input type="file" accept=".png, .jpg, .jpeg" name="imageBanner" id="imageBanner"
+                                onchange="loadFile(event, 'output-b')" hidden>
+                            <!--                        <span class="import p-10">Import</span>-->
+                            <img id="output-b" class="shadow" style="display: none">
+                            <p id="banner_error"></p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="checkbox-thing">
+                <div class="genre-box input-half-wrapper">
+                    <div>
+                        <span class="field">Genre</span>
+                        <div class="grid">
+                            <label th:each="genre: ${listGenre}">
+                                <input type="checkbox" id="genre_value" name="genre" th:value="${genre.genreName}"
+                                    th:checked="${movie != null and movie.movie_genres != null and movie.movie_genres.contains(genre)}">
+                                <span th:text="${genre.genreName}"></span>
+                            </label>
+                        </div>
+                        <p id="genre_error"></p>
+                    </div>
+                </div>
+                <div class="input-half-wrapper">
+                    <div class="status">
+                        <span class="field">Status</span>
+                        <div class="flex">
+                            <label>
+                                <input type="radio" name="status" value="HIDDEN" th:checked="${status == 'HIDDEN'}">
+                                <span>Hidden</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="status" value="ACTIVE" th:checked="${status == 'ACTIVE'}">
+                                <span>Active</span>
+                            </label>
+                            <p id="status_error"></p>
+                            <p th:text="${error}" style="color: red;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="poster" th:value="${poster}" />
+            <input type="hidden" name="banner" th:value="${banner}" />
+            <input type="hidden" th:value="${PosterImagePath}" id="poster" />
+            <input type="hidden" th:value="${BannerImagePath}" id="banner" />
+            <input type="hidden" th:field="*{description}" name="description" id="des">
+            <input type="hidden" th:field="*{shortDescription}" name="short_description" id="short_des">
+            <div class="submit">
+                <input type="button" onclick="checkMovie()" th:value="${movieId==null?'Add' : 'Edit'}">
+            </div>
+        </form>
+    </div>
+    <div th:replace="footer.html"></div>
+    <script th:src="@{/js/add_movie.js}"></script>
+    <script>
+        var posterPath = document.getElementById("poster").value;
+        var bannerPath = document.getElementById("banner").value;
+
+        if (posterPath) {
+            let output = document.getElementById('output');
+            output.style.display = "block";
+            output.src = posterPath;
+        }
+        if (bannerPath) {
+            let output = document.getElementById('output-b');
+            output.style.display = "block";
+            output.src = bannerPath;
+        }
+
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+            tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + "px";
+        }
+
+        let editor1 = CKEDITOR.replace('description');
+        let editor2 = CKEDITOR.replace('short_description');
+
+        let des = document.getElementById('des');
+        let short_des = document.getElementById('short_des');
+
+        function editCKEditor(editor, element) {
+            editor.setData(element.value);
+        }
+
+        editCKEditor(editor1, des);
+        editCKEditor(editor2, short_des);
+
+        editor1.on('key', (e) => {
+            setTimeout(
+                () => {
+                    des.value = (editor1.getData());
+                }, 10);
+        });
+
+        editor2.on('key', (e) => {
+            setTimeout(
+                () => {
+                    short_des.value = (editor2.getData());
+                }, 10);
+        });
+
+        let video = document.querySelector('.video');
+        changeURL();
+
+        function changeURL() {
+            let trailer = document.getElementById("trailer");
+
+            if (trailer.value === null || trailer.value === "") {
+                video.style.display = 'none';
+            } else {
+                video.style.display = 'block';
+                trailer = trailer.value.split("?v=")[1];
+                if (trailer != null)
+                    video.src = `https://www.youtube.com/embed/${trailer}`;
+            }
+        }
+
+
+
+    </script>
+</body>
+
+</html>
