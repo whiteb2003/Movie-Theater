@@ -1,112 +1,114 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Movie Detail</title>
     <link rel="stylesheet" th:href="@{/css/specificMovie.css}">
 
 </head>
+
 <body>
-<div th:replace="nav.html"></div>
-<div th:style="'background:url(/images/' + ${movie.getBanner()} + ');' + 'background-size:cover'" class="ground-image">
-</div>
-<main class="main">
-    <div class="func-wrapper important">
-        <div class="rel mb-30">
-            <a th:href="@{'/movies/movie_details/' + ${movie.movie_id}}" class="back">
-                <button type="button">Back</button>
-            </a>
-        </div>
-        <div class="movie-info-session">
-            <div>
-                <div class="image-holder">
-                    <img th:src="${movie.getPosterImagePath()}">
-                </div>
-            </div>
-            <div class="movie-info">
-                <div class="title" th:text="${movie.movie_title_en}"><b>Borderlands</b></div>
-                <div class="genre">
-                    <span style="font-weight: 500">Genre: </span>
-                    <span>Adventure, Thriller, Horror</span>
-                </div>
-                <div>
-                    <span style="font-weight: 500">Duration: </span>
-                    <span th:text="${duration}">123 mins</span>
-                </div>
-                <div>
-                    <span style="font-weight: 500">Release date:</span>
-                    <span th:text="${#dates.format(movie.release_date, 'dd/MM/yyyy')}">0/0/0000</span>
-                </div>
-
-<!--                <div class="trailer mt-10 mb-10">-->
-<!--                    <input id="link" type="hidden" th:value="${movie.trailer}">-->
-<!--                    <iframe class="video" allowfullscreen></iframe>-->
-<!--                </div>-->
-
-                <div class="description">
-                    <input class="info-des" type="hidden" th:value="${movie.getShortDescription()}"/>
-                    <div class="des mt-10"></div>
-                </div>
-            </div>
-        </div>
-        <div class="date-wrapper">
-            <div th:each="movieRoomDate : ${movie_room_dates}">
-                <a class="date"
-                   th:href="@{/datechose/{movieId}/{mrdId}(movieId=${movie.movie_id}, mrdId=${movieRoomDate})}"
-                   th:text="${#dates.format(movieRoomDate, 'dd/MM')}"
-                   th:classappend="${current_id == movieRoomDate} ? 'current' : ''">Choose Date</a>
-            </div>
-        </div>
-
-        <div class="room-wrapper mb-30">
-            <div th:each="room : ${rooms}">
-                <a class="room p-10"
-                   th:href="@{/datechose/{movieId}/{mrdId}/{room_id}(movieId=${movie.movie_id}, mrdId=${current_id}, room_id=${room.mrd_id})}"
-                   th:text="${room.room.room_name}"
-                   th:classappend="${current_room == room.mrd_id} ? 'current' : ''">Choose Date</a>
-            </div>
-        </div>
-
-        <div class="schedule-wrapper">
-            <div th:each="time : ${times}">
-                <a class="schedule"
-                   th:href="@{/seatchose/{movieId}/{timeId}
-                   (movieId=${movie.movie_id}, timeId = ${time.movie_schedules_id})}"
-                >
-                    <span style="border-bottom: 1px solid darkgray" th:text="${time.start} + ' ~ ' + ${time.end}">
-                        time
-                    </span>
-                    <span th:text="${time.seat_booked} + ' / ' + ${time.seat} + ' seats'">
-                        seat
-                    </span>
+    <div th:replace="nav.html"></div>
+    <div th:style="'background:url(/images/' + ${movie.getBanner()} + ');' + 'background-size:cover'"
+        class="ground-image">
+    </div>
+    <main class="main">
+        <div class="func-wrapper important">
+            <div class="rel mb-30">
+                <a th:href="@{'/movies/movie_details/' + ${movie.movie_id}}" class="back">
+                    <button type="button">Back</button>
                 </a>
             </div>
+            <div class="movie-info-session">
+                <div>
+                    <div class="image-holder">
+                        <img th:src="${movie.getPosterImagePath()}">
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <div class="title" th:text="${movie.movie_title_en}"><b>Borderlands</b></div>
+                    <div class="genre">
+                        <span style="font-weight: 500">Genre: </span>
+                        <span>Adventure, Thriller, Horror</span>
+                    </div>
+                    <div>
+                        <span style="font-weight: 500">Duration: </span>
+                        <span th:text="${duration}">123 mins</span>
+                    </div>
+                    <div>
+                        <span style="font-weight: 500">Release date:</span>
+                        <span th:text="${#dates.format(movie.release_date, 'dd/MM/yyyy')}">0/0/0000</span>
+                    </div>
+
+                    <!--                <div class="trailer mt-10 mb-10">-->
+                    <!--                    <input id="link" type="hidden" th:value="${movie.trailer}">-->
+                    <!--                    <iframe class="video" allowfullscreen></iframe>-->
+                    <!--                </div>-->
+
+                    <div class="description">
+                        <input class="info-des" type="hidden" th:value="${movie.getShortDescription()}" />
+                        <div class="des mt-10"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="date-wrapper">
+                <div th:each="movieRoomDate : ${movie_room_dates}">
+                    <a class="date"
+                        th:href="@{/datechose/{movieId}/{mrdId}(movieId=${movie.movie_id}, mrdId=${movieRoomDate})}"
+                        th:text="${#dates.format(movieRoomDate, 'dd/MM')}"
+                        th:classappend="${current_id == movieRoomDate} ? 'current' : ''">Choose Date</a>
+                </div>
+            </div>
+
+            <div class="room-wrapper mb-30">
+                <div th:each="room : ${rooms}">
+                    <a class="room p-10"
+                        th:href="@{/datechose/{movieId}/{mrdId}/{room_id}(movieId=${movie.movie_id}, mrdId=${current_id}, room_id=${room.mrd_id})}"
+                        th:text="${room.room.room_name}"
+                        th:classappend="${current_room == room.mrd_id} ? 'current' : ''">Choose Date</a>
+                </div>
+            </div>
+
+            <div class="schedule-wrapper">
+                <div th:each="time : ${times}">
+                    <a class="schedule" th:href="@{/seatchose/{movieId}/{timeId}
+                   (movieId=${movie.movie_id}, timeId = ${time.movie_schedules_id})}">
+                        <span style="border-bottom: 1px solid darkgray" th:text="${time.start} + ' ~ ' + ${time.end}">
+                            time
+                        </span>
+                        <span th:text="${time.seat_booked} + ' / ' + ${time.seat} + ' seats'">
+                            seat
+                        </span>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<div th:replace="footer.html"></div>
-<script>
-    let info = document.querySelector('.info-des');
-    let des = document.querySelector('.des');
+    <div th:replace="footer.html"></div>
+    <script>
+        let info = document.querySelector('.info-des');
+        let des = document.querySelector('.des');
 
-    des.innerHTML = info.value;
+        des.innerHTML = info.value;
 
-    let video = document.querySelector('.video');
-    changeURL();
+        let video = document.querySelector('.video');
+        changeURL();
 
-    function changeURL() {
-        let trailer = document.getElementById("link");
+        function changeURL() {
+            let trailer = document.getElementById("link");
 
-        if (trailer.value === null || trailer.value === "") {
-            video.style.display = 'none';
-        } else {
-            video.style.display = 'block';
-            trailer = trailer.value.split("?v=")[1];
-            if (trailer != null)
-                video.src = `https://www.youtube.com/embed/${trailer}`;
+            if (trailer.value === null || trailer.value === "") {
+                video.style.display = 'none';
+            } else {
+                video.style.display = 'block';
+                trailer = trailer.value.split("?v=")[1];
+                if (trailer != null)
+                    video.src = `https://www.youtube.com/embed/${trailer}`;
+            }
         }
-    }
-</script>
+    </script>
 </body>
+
 </html>

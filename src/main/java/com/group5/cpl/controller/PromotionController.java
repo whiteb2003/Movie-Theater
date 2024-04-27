@@ -34,7 +34,7 @@ public class PromotionController {
     private final Account_Util account_util;
 
     public PromotionController(PromotionService promotionService, AccountService accountService,
-                               Account_Util account_util) {
+            Account_Util account_util) {
         this.promotionService = promotionService;
         this.accountService = accountService;
         this.account_util = account_util;
@@ -48,7 +48,7 @@ public class PromotionController {
     // manager status only
     @GetMapping("/add")
     public String createNewPromotion(Model model, Authentication authentication,
-                                     RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             boolean isManager = account_util.isUserManager(authentication);
@@ -69,11 +69,11 @@ public class PromotionController {
 
     @PostMapping("/add")
     public String createPromotion(Model model,
-                                  Authentication authentication,
-                                  RedirectAttributes redirectAttributes,
-                                  @ModelAttribute Promotion promotion,
-                                  BindingResult bindingResult,
-                                  @RequestParam("image") MultipartFile multipartFile) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @ModelAttribute Promotion promotion,
+            BindingResult bindingResult,
+            @RequestParam("image") MultipartFile multipartFile) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             boolean isManager = account_util.isUserManager(authentication);
@@ -101,11 +101,11 @@ public class PromotionController {
 
     @GetMapping("/manage")
     public String getAllPromotions(Model model,
-                                   Authentication authentication,
-                                   RedirectAttributes redirectAttributes,
-                                   @RequestParam(defaultValue = "0") int offset,
-                                   @RequestParam(defaultValue = "5") int pageSize,
-                                   HttpServletRequest request) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "5") int pageSize,
+            HttpServletRequest request) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             String keyword = request.getParameter("keyword");
@@ -113,7 +113,7 @@ public class PromotionController {
             Pageable pageable = (Pageable) PageRequest.of(offset, pageSize, Sort.by("status"));
             Page<Promotion> promotionPage;
             if (isManager) {
-                promotionPage = promotionService.getPromotions(keyword,pageable);
+                promotionPage = promotionService.getPromotions(keyword, pageable);
             } else {
                 promotionPage = promotionService.getActivePromotions(pageable);
             }
@@ -131,10 +131,10 @@ public class PromotionController {
 
     @GetMapping("/available")
     public String getAvailablePromotions(Model model,
-                                         Authentication authentication,
-                                         RedirectAttributes redirectAttributes,
-                                         @RequestParam(defaultValue = "0") int offset,
-                                         @RequestParam(defaultValue = "5") int pageSize) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "5") int pageSize) {
         if (account_util.isAuthenticated(authentication)) {
             boolean isManager = account_util.isUserManager(authentication);
             Pageable pageable = (Pageable) PageRequest.of(offset, pageSize);
@@ -153,10 +153,10 @@ public class PromotionController {
 
     @GetMapping("/unavailable")
     public String getUnavailablePromotions(Model model,
-                                           Authentication authentication,
-                                           RedirectAttributes redirectAttributes,
-                                           @RequestParam(defaultValue = "0") int offset,
-                                           @RequestParam(defaultValue = "5") int pageSize) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "5") int pageSize) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             boolean isManager = account_util.isUserManager(authentication);
@@ -181,9 +181,9 @@ public class PromotionController {
 
     @RequestMapping("/{promotionId}")
     public String getPromotionById(Model model,
-                                   Authentication authentication,
-                                   RedirectAttributes redirectAttributes,
-                                   @PathVariable("promotionId") Long promotionId) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @PathVariable("promotionId") Long promotionId) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             boolean isManager = account_util.isUserManager(authentication);
@@ -203,9 +203,9 @@ public class PromotionController {
 
     @GetMapping("/update/{promotionId}")
     public String updatePromotion(Model model,
-                                  Authentication authentication,
-                                  RedirectAttributes redirectAttributes,
-                                  @PathVariable("promotionId") Long promotionId) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @PathVariable("promotionId") Long promotionId) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             boolean isManager = account_util.isUserManager(authentication);
@@ -226,13 +226,13 @@ public class PromotionController {
 
     @PostMapping("/update/{promotionId}")
     public String updatePromotion(Model model,
-                                  Authentication authentication,
-                                  RedirectAttributes redirectAttributes,
-                                  @PathVariable("promotionId") Long promotionId,
-                                  @ModelAttribute Promotion promotion,
-                                  BindingResult bindingResult,
-                                  @RequestParam("image") MultipartFile multipartFile,
-                                  @RequestParam("status") String statusValue) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            @PathVariable("promotionId") Long promotionId,
+            @ModelAttribute Promotion promotion,
+            BindingResult bindingResult,
+            @RequestParam("image") MultipartFile multipartFile,
+            @RequestParam("status") String statusValue) {
         if (account_util.isAuthenticated(authentication)) {
             // Check if the user has the role of MANAGER
             boolean isManager = account_util.isUserManager(authentication);
